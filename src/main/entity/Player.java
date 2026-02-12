@@ -53,8 +53,8 @@ public class Player extends Entity {
      * SET DEFAULT POSITON
      */
     private void setDefaultPosition() {
-        worldX = gp.tileSize * 11;
-        worldY = gp.tileSize * 8;
+        worldX = gp.tileSize * 18;
+        worldY = gp.tileSize * 3;
     }
 
     /**
@@ -63,28 +63,8 @@ public class Player extends Entity {
      * Called by GamePanel every frame
      */
     public void update() {
-        if (moving) walking();
+        if (moving) moving();
         else handleMovementInput();
-    }
-
-    /**
-     * WALKING
-     * Auto moves player to next tile
-     * Called by update()
-     */
-    public void walking() {
-        if (canMove) {
-            move(direction);
-            cycleSprites();
-        }
-
-        pixelCounter += speed;
-        if (pixelCounter >= gp.tileSize - speed) {
-            moving = false;
-            pixelCounter = 0;
-            spriteNum = 1;
-            spriteCounter = 0;
-        }
     }
 
     /**
@@ -117,8 +97,10 @@ public class Player extends Entity {
         int word = gp.cChecker.checkEntity(this, gp.words);
 
         if (word != -1) {
-            String name = gp.words[0][word].name;
-            System.out.println(name);
+            gp.words[0][word].checkCollision();
+            if (!gp.words[0][word].collisionOn) {
+                gp.words[0][word].move(direction);
+            }
         }
     }
 
@@ -143,11 +125,11 @@ public class Player extends Entity {
      */
     protected void updateDirection() {
         updateFacing();
-
-        collisionOn = false;
         checkCollision();
 
-        move(direction);
+        if (!collisionOn) {
+            moving = true;
+        }
     }
 
     /**
@@ -180,7 +162,11 @@ public class Player extends Entity {
      */
     public void draw(Graphics2D g2) {
         image = getSprite();
+
         g2.drawImage(image, worldX, worldY, null);
+
+        // Draw hitbox (debug)
+        g2.drawRect(worldX, worldY, hitbox.width, hitbox.height);
     }
 
     /** GET CURRENT SPRITE TO DRAW **/

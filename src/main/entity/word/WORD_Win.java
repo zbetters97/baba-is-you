@@ -16,6 +16,6 @@ public class WORD_Win extends Entity {
         name = wordName;
         collisionOn = true;
 
-        down1 = setupImage("/words/word_win");
+        up1 = down1 = left1 = right1 = setupImage("/words/word_win");
     }
 }

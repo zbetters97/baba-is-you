@@ -1,6 +1,7 @@
 package entity;
 
 import application.GamePanel;
+import entity.word.WORD_Is;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -79,6 +80,30 @@ public class Entity {
      * Called every frame by GamePanel
      */
     public void update() {
+        if (moving) {
+            moving();
+        }
+    }
+
+    protected void moving() {
+        if (canMove) {
+            switch (direction) {
+                case UP -> worldY -= speed;
+                case DOWN -> worldY += speed;
+                case LEFT -> worldX -= speed;
+                case RIGHT-> worldX += speed;
+            }
+
+            cycleSprites();
+        }
+
+        pixelCounter += speed;
+        if (pixelCounter >= gp.tileSize) {
+            moving = false;
+            pixelCounter = 0;
+            spriteNum = 1;
+            spriteCounter = 0;
+        }
     }
 
     /**
@@ -98,6 +123,7 @@ public class Entity {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkEntity(this, gp.obj);
+        gp.cChecker.checkEntity(this, gp.words);
     }
 
     /**
@@ -105,22 +131,16 @@ public class Entity {
      * Repositions the entity's X, Y based on direction and speed
      * Called by updateDirection() if o collision
      */
-    protected void move(GamePanel.Direction direction) {
-        if (!canMove || collisionOn) {
-            moving = false;
-            return;
+    protected void move(GamePanel.Direction movingDirection) {
+        if (!moving) {
+            direction = movingDirection;
+
+            checkCollision();
+
+            if (!collisionOn) {
+                moving = true;
+            }
         }
-
-        moving = true;
-
-        switch (direction) {
-            case UP -> worldY -= speed;
-            case DOWN -> worldY += speed;
-            case LEFT -> worldX -= speed;
-            case RIGHT-> worldX += speed;
-        }
-
-        cycleSprites();
     }
 
     /**
@@ -153,5 +173,8 @@ public class Entity {
 
         // Draw sprite
         g2.drawImage(image, worldX, worldY, null);
+
+        // Draw hitbox (debug)
+        g2.drawRect(worldX, worldY, hitbox.width, hitbox.height);
     }
 }
