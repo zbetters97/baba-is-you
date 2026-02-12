@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /* CONTROLS / SOUND / UI */
     public KeyHandler keyH = new KeyHandler();
-   // public UI ui = new UI(this);
+    public UI ui = new UI(this);
 
     /* SCREEN SETTINGS */
     private final int originalTileSize = 16; // 16x16 tile
@@ -204,6 +204,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawToTempScreen() {
       drawTiles();
       drawEntities();
+      ui.draw(g2);
     }
 
     /** DRAW METHODS **/
