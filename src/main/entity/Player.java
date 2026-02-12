@@ -10,6 +10,8 @@ import static application.GamePanel.Direction.*;
 
 public class Player extends Entity {
 
+    private boolean canWin = true;
+
     /**
      * CONSTRUCTOR
      * @param gp GamePanel
@@ -93,6 +95,7 @@ public class Player extends Entity {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         checkObjects();
+        checkWords();
     }
 
     private void checkObjects() {
@@ -105,8 +108,17 @@ public class Player extends Entity {
     }
 
     private void checkFlag(String name) {
-        if (name.equals(OBJ_Flag.objName)) {
+        if (name.equals(OBJ_Flag.objName) && canWin) {
             System.out.println("WINNER!");
+        }
+    }
+
+    private void checkWords() {
+        int word = gp.cChecker.checkEntity(this, gp.words);
+
+        if (word != -1) {
+            String name = gp.words[0][word].name;
+            System.out.println(name);
         }
     }
 
