@@ -44,7 +44,6 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -59,14 +58,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     /* HANDLERS */
     public TileManager tileM = new TileManager(this);
-  //  public AssetSetter aSetter = new AssetSetter(this);
+    public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
 
     /* ENTITIES */
-    // private final ArrayList<Entity> entityList = new ArrayList<>();
+    private final ArrayList<Entity> entityList = new ArrayList<>();
     public final Player player = new Player(this);
-  //  public final Entity[][] npc = new Entity[maxMap][10];
-  //  public final Entity[][] enemy = new Entity[maxMap][10];
+    public Entity[][] obj = new Entity[maxMap][10];
+    public Entity[][] words = new Entity[maxMap][10];
 
     /**
      * CONSTRUCTOR
@@ -94,6 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2 = (Graphics2D) tempScreen.getGraphics();
 
         tileM.loadMap();
+        aSetter.setup();
 
         player.setDefaultValues();
 
@@ -176,6 +176,24 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void update() {
         player.update();
+        updateObjects();
+        updateWords();
+    }
+
+    private void updateObjects() {
+        for (int i = 0; i < obj[0].length; i++) {
+            if (obj[0][i] != null) {
+                obj[0][i].update();
+            }
+        }
+    }
+
+    private void updateWords() {
+        for (int i = 0; i < words[0].length; i++) {
+            if (words[0][i] != null) {
+                words[0][i].update();
+            }
+        }
     }
 
     /**
@@ -194,10 +212,26 @@ public class GamePanel extends JPanel implements Runnable {
     }
     private void drawEntities() {
 
-        player.draw(g2);
+        for (Entity o : obj[0]) {
+            if (o != null) {
+                entityList.add(o);
+            }
+        }
+
+        for (Entity w : words[0]) {
+            if (w != null) {
+                entityList.add(w);
+            }
+        }
+
+        for (Entity e : entityList) {
+            e.draw(g2);
+        }
 
         // Empty list
-       // entityList.clear();
+        entityList.clear();
+
+        player.draw(g2);
     }
 
     /**

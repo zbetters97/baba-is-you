@@ -37,7 +37,7 @@ public class TileManager {
     public void loadMap() {
 
         // Import current map
-        InputStream inputStream = getClass().getResourceAsStream("/maps/" + gp.mapFiles[gp.currentMap]);
+        InputStream inputStream = getClass().getResourceAsStream("/maps/" + gp.mapFiles[0]);
         int mapLength = 0;
 
         try {
@@ -50,7 +50,7 @@ public class TileManager {
 
                 for (int col = 0; col < numbers.length; col++) {
                     int tileNum = Integer.parseInt(numbers[col]);
-                    mapTileNum[gp.currentMap][col][row] = tileNum;
+                    mapTileNum[0][col][row] = tileNum;
                 }
             }
 
@@ -143,7 +143,7 @@ public class TileManager {
 
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
-            int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
+            int tileNum = mapTileNum[0][worldCol][worldRow];
 
             g2.drawImage(tiles[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
             worldCol++;

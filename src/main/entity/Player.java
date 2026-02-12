@@ -1,6 +1,7 @@
 package entity;
 
 import application.GamePanel;
+import entity.object.OBJ_Flag;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,6 +16,7 @@ public class Player extends Entity {
      */
     public Player(GamePanel gp) {
         super(gp);
+        name = "Baba";
     }
 
     /* GET IMAGES */
@@ -49,10 +51,8 @@ public class Player extends Entity {
      * SET DEFAULT POSITON
      */
     private void setDefaultPosition() {
-        worldX = gp.tileSize;
-        worldY = gp.tileSize * 2;
-
-        gp.currentMap = 0;
+        worldX = gp.tileSize * 11;
+        worldY = gp.tileSize * 8;
     }
 
     /**
@@ -82,6 +82,31 @@ public class Player extends Entity {
             pixelCounter = 0;
             spriteNum = 1;
             spriteCounter = 0;
+        }
+    }
+
+    /**
+     * CHECK COLLISION
+     * Checks if the entity collides with something
+     */
+    protected void checkCollision() {
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+        checkObjects();
+    }
+
+    private void checkObjects() {
+        int obj = gp.cChecker.checkEntity(this, gp.obj);
+
+        if (obj != -1) {
+            String name = gp.obj[0][obj].name;
+            checkFlag(name);
+        }
+    }
+
+    private void checkFlag(String name) {
+        if (name.equals(OBJ_Flag.objName)) {
+            System.out.println("WINNER!");
         }
     }
 

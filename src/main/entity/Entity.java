@@ -16,9 +16,10 @@ public class Entity {
 
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
+    protected String name;
 
     /* MOVEMENT VALUES */
-    public GamePanel.Direction direction = RIGHT;
+    public GamePanel.Direction direction = DOWN;
     public int speed = 4;
     protected boolean moving = false;
 
@@ -26,6 +27,7 @@ public class Entity {
     protected int pixelCounter = 0;
 
     /* COLLISION VALUES */
+    public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
     public boolean collisionOn = true;
     protected boolean canMove = true;
 
@@ -95,6 +97,7 @@ public class Entity {
     protected void checkCollision() {
         collisionOn = false;
         gp.cChecker.checkTile(this);
+        gp.cChecker.checkEntity(this, gp.obj);
     }
 
     /**
