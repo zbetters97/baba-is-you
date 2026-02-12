@@ -19,7 +19,7 @@ public class Entity {
 
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = RIGHT;
-    protected int speed = 4;
+    public int speed = 4;
     protected boolean moving = false;
 
     /* ANIMATION VALUES */
@@ -28,7 +28,6 @@ public class Entity {
     /* COLLISION VALUES */
     public boolean collisionOn = true;
     protected boolean canMove = true;
-    public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
 
     /* SPRITE ATTRIBUTES */
     protected BufferedImage image, up1, up2, down1, down2, left1, left2, right1, right2;
@@ -49,12 +48,6 @@ public class Entity {
      * GET IMAGE
      */
     protected void getImages() { }
-
-    /**
-     * SET ACTION
-     */
-    protected void setAction() { }
-    /* END CHILD FUNCTIONS */
 
     /**
      * SETUP IMAGE
@@ -101,9 +94,7 @@ public class Entity {
      */
     protected void checkCollision() {
         collisionOn = false;
-
-       // gp.cChecker.checkTile(this);
-       // boolean contactPlayer = gp.cChecker.checkPlayer(this);
+        gp.cChecker.checkTile(this);
     }
 
     /**
@@ -125,23 +116,21 @@ public class Entity {
             case LEFT -> worldX -= speed;
             case RIGHT-> worldX += speed;
         }
+
+        cycleSprites();
     }
 
     /**
-     * GET MOVE DIRECTION
-     * Called by CollisionDetector
-     * @return Current direction of the entity
+     * CYCLE SPRITES
+     * Changes the animation counter for draw to render the correct sprite
      */
-    public GamePanel.Direction getMoveDirection() {
-        return direction;
-    }
-
-    /**
-     * MANAGE VALUES
-     * Resets or reassigns entity attributes
-     * called at the end of update
-     */
-    protected void manageValues() {
+    protected void cycleSprites() {
+        if (pixelCounter > 0 && pixelCounter < gp.tileSize) {
+            spriteNum = 2;
+        }
+        else  {
+            spriteNum = 1;
+        }
     }
 
     /**

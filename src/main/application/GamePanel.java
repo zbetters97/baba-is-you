@@ -40,8 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
     /* WORLD SIZE */
     public int maxWorldCol = 33;
     public int maxWorldRow = 18;
-    public int worldWidth = tileSize * maxWorldCol;
-    public int worldHeight  = tileSize * maxWorldRow;
 
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt"};
@@ -62,10 +60,10 @@ public class GamePanel extends JPanel implements Runnable {
     /* HANDLERS */
     public TileManager tileM = new TileManager(this);
   //  public AssetSetter aSetter = new AssetSetter(this);
-  //  public CollisionChecker cChecker = new CollisionChecker(this);
+    public CollisionChecker cChecker = new CollisionChecker(this);
 
     /* ENTITIES */
-    private final ArrayList<Entity> entityList = new ArrayList<>();
+    // private final ArrayList<Entity> entityList = new ArrayList<>();
     public final Player player = new Player(this);
   //  public final Entity[][] npc = new Entity[maxMap][10];
   //  public final Entity[][] enemy = new Entity[maxMap][10];
@@ -199,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2);
 
         // Empty list
-        entityList.clear();
+       // entityList.clear();
     }
 
     /**

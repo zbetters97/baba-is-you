@@ -49,7 +49,7 @@ public class Player extends Entity {
      * SET DEFAULT POSITON
      */
     private void setDefaultPosition() {
-        worldX = gp.tileSize * 1;
+        worldX = gp.tileSize;
         worldY = gp.tileSize * 2;
 
         gp.currentMap = 0;
@@ -61,30 +61,18 @@ public class Player extends Entity {
      * Called by GamePanel every frame
      */
     public void update() {
-        checkCollision();
-
-        if (moving) {
-            walking();
-        }
-        else {
-            handleMovementInput();
-        }
-
-        manageValues();
+        if (moving) walking();
+        else handleMovementInput();
     }
 
     /**
-     * CHECK COLLISION
-     * Checks if player has collided with anything
+     * WALKING
+     * Auto moves player to next tile
      * Called by update()
      */
-    protected void checkCollision() {
-        collisionOn = false;
-    }
-
     public void walking() {
         if (canMove) {
-            move();
+            move(direction);
             cycleSprites();
         }
 
@@ -94,19 +82,6 @@ public class Player extends Entity {
             pixelCounter = 0;
             spriteNum = 1;
             spriteCounter = 0;
-        }
-    }
-
-    /**
-     * CYCLE SPRITES
-     * Changes the animation counter for draw to render the correct sprite
-     */
-    protected void cycleSprites() {
-        if (pixelCounter > 0 && pixelCounter < gp.tileSize) {
-            spriteNum = 2;
-        }
-        else  {
-            spriteNum = 1;
         }
     }
 
@@ -131,8 +106,11 @@ public class Player extends Entity {
      */
     protected void updateDirection() {
         updateFacing();
-        move();
-        cycleSprites();
+
+        collisionOn = false;
+        checkCollision();
+
+        move(direction);
     }
 
     /**
@@ -155,34 +133,6 @@ public class Player extends Entity {
         else if (right) nextDirection = RIGHT;
 
         direction = nextDirection;
-    }
-
-    /**
-     * MOVE
-     * Repositions the player's X, Y based on direction and speed
-     * Called by updateDirection() if no collision
-     */
-    protected void move() {
-        GamePanel.Direction newDirection = getMoveDirection();
-        super.move(newDirection);
-    }
-
-    /**
-     * RESOLVE MOVE DIRECTION
-     * @return updated player direction
-     * Decides if direction or lockonDirection should be used
-     * Called by move()
-     */
-    public GamePanel.Direction getMoveDirection() {
-        return direction;
-    }
-
-    /**
-     * MANAGE VALUES
-     * Resets or reassigns player attributes
-     * Called by update() at the end
-     */
-    protected void manageValues() {
     }
 
     /**
