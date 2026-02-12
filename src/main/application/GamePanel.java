@@ -1,0 +1,215 @@
+package application;
+
+import entity.Entity;
+import entity.Player;
+import tile.TileManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class GamePanel extends JPanel implements Runnable {
+
+    public enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
+    /* GENERAL CONFIG */
+    private Graphics2D g2;
+    private Thread gameThread;
+    public static UtilityTool utility = new UtilityTool();
+
+    /* CONTROLS / SOUND / UI */
+    public KeyHandler keyH = new KeyHandler();
+   // public UI ui = new UI(this);
+
+    /* SCREEN SETTINGS */
+    private final int originalTileSize = 16; // 16x16 tile
+    private final int scale = 3; // scale rate to accommodate for large screen
+    public final int tileSize = originalTileSize * scale; // scaled tile (16*3 = 48px)
+    public final int maxScreenCol = 33; // columns (width)
+    public final int maxScreenRow = 18; // rows (height)
+    public final int screenWidth = tileSize * maxScreenCol; // screen width (in tiles) 792px
+    public final int screenHeight = tileSize * maxScreenRow;
+
+    /* WORLD SIZE */
+    public int maxWorldCol = 33;
+    public int maxWorldRow = 18;
+    public int worldWidth = tileSize * maxWorldCol;
+    public int worldHeight  = tileSize * maxWorldRow;
+
+    /* MAPS */
+    public final String[] mapFiles = {"map_lvl_1.txt"};
+    public final int maxMap = mapFiles.length;
+    public int currentMap = 0;
+
+    /* FULL SCREEN SETTINGS */
+    public boolean fullScreenOn = false;
+    private int screenWidth2 = screenWidth;
+    private int screenHeight2 = screenHeight;
+    private BufferedImage tempScreen;
+
+    /* GAME STATES */
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState = 1;
+
+    /* HANDLERS */
+    public TileManager tileM = new TileManager(this);
+  //  public AssetSetter aSetter = new AssetSetter(this);
+  //  public CollisionChecker cChecker = new CollisionChecker(this);
+
+    /* ENTITIES */
+    private final ArrayList<Entity> entityList = new ArrayList<>();
+    public final Player player = new Player(this);
+  //  public final Entity[][] npc = new Entity[maxMap][10];
+  //  public final Entity[][] enemy = new Entity[maxMap][10];
+
+    /**
+     * CONSTRUCTOR
+     */
+    public GamePanel() {
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // screen size
+        this.setBackground(Color.black);
+        this.setDoubleBuffered(true); // improves rendering performance
+
+        this.addKeyListener(keyH);
+        this.setFocusable(true); // GamePanel in focus to receive input
+    }
+
+    /**
+     * SETUP GAME
+     * Prepares the game with default settings
+     * Called by Driver
+     */
+    protected void setupGame() {
+
+        gameState = playState;
+
+        // Temp game window (before drawing to window)
+        tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        g2 = (Graphics2D) tempScreen.getGraphics();
+
+        tileM.loadMap();
+
+        player.setDefaultValues();
+
+        if (fullScreenOn) {
+            setFullScreen();
+        }
+    }
+
+    /**
+     * SET FULL SCREEN
+     * Changes the graphics to full screen mode
+     * Called by setupGame()
+     */
+    private void setFullScreen() {
+
+        // Get system screen
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        gd.setFullScreenWindow(Driver.window);
+
+        // Get full screen width and height
+        screenWidth2 = Driver.window.getWidth();
+        screenHeight2 = Driver.window.getHeight();
+    }
+
+    /**
+     * START GAME THREAD
+     * Runs a new thread
+     * Called by Driver
+     */
+    protected void startGameThread() {
+
+        // New Thread with GamePanel class
+        gameThread = new Thread(this);
+
+        // Calls run() endlessly
+        gameThread.start();
+    }
+
+    /**
+     * RUN
+     * Draws and updates the game 60 times a second
+     * Called using the game thread start() method
+     */
+    @Override
+    public void run() {
+
+        long currentTime;
+        long lastTime = System.nanoTime();
+        double drawInterval = 1000000000.0 / 60.0; // 1/60th of a second
+        double delta = 0;
+
+        // Update and repaint gameThread
+        while (gameThread != null) {
+
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval; // Time passed (1/60th second)
+            lastTime = currentTime;
+
+            if (delta >= 1) {
+
+                // Update game information
+                update();
+
+                // Draw temp screen with new information
+                drawToTempScreen();
+
+                // Send temp screen to monitors
+                drawToScreen();
+
+                delta = 0;
+            }
+        }
+    }
+
+    /**
+     * UPDATE
+     * Runs each time the frame is updated
+     * Called by run()
+     */
+    private void update() {
+        player.update();
+    }
+
+    /**
+     * DRAW TO TEMP SCREEN
+     * Draws to temporary screen before drawing to front-end
+     * Called by run()
+     */
+    private void drawToTempScreen() {
+      drawTiles();
+      drawEntities();
+    }
+
+    /** DRAW METHODS **/
+    private void drawTiles() {
+        tileM.draw(g2);
+    }
+    private void drawEntities() {
+
+        player.draw(g2);
+
+        // Empty list
+        entityList.clear();
+    }
+
+    /**
+     * DRAW TO SCREEN
+     * Draws graphics to screen
+     * Called by run()
+     */
+    private void drawToScreen() {
+        Graphics g = getGraphics();
+        g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
+        g.dispose();
+    }
+}
