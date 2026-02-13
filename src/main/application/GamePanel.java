@@ -1,14 +1,11 @@
 package application;
 
 import entity.Entity;
-import entity.Player;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -62,8 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final LogicHandler lHandler = new LogicHandler(this);
 
     /* ENTITIES */
-    private final ArrayList<Entity> entityList = new ArrayList<>();
-    public final Player player = new Player(this);
+    public Entity[][] chr = new Entity[maxWorldRow][50];
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
@@ -97,7 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
         tileM.loadMap();
         aSetter.setup();
 
-        player.setDefaultValues();
+       // player.setDefaultValues();
 
         if (fullScreenOn) {
             setFullScreen();
@@ -177,10 +173,18 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        player.update();
+        updateCharacters();
         updateObjects();
         updateWords();
         lHandler.update();
+    }
+
+    private void updateCharacters() {
+        for (int i = 0; i < chr[0].length; i++) {
+            if (chr[0][i] != null) {
+                chr[0][i].update();
+            }
+        }
     }
 
     private void updateObjects() {
@@ -206,43 +210,44 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void drawToTempScreen() {
         clearBackBuffer();
-        drawTiles();
-        drawEntities();
+        tileM.draw(g2);
+        drawObjects();
+        drawWords();
+        drawCharacters();
         ui.draw(g2);
     }
 
-    // Fills the background with black to eliminate artifacting
+    /**
+     * CLEAR BACK BUFFER
+     * Fills the background with black to eliminate artifacting
+     * Called by drawToTempScreen()
+     */
     private void clearBackBuffer() {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, screenWidth, screenHeight);
     }
 
     /** DRAW METHODS **/
-    private void drawTiles() {
-        tileM.draw(g2);
-    }
-    private void drawEntities() {
-
+    private void drawObjects() {
         for (Entity o : obj[0]) {
             if (o != null) {
-                entityList.add(o);
+                o.draw(g2);
             }
         }
-
+    }
+    private void drawWords() {
         for (Entity w : words[0]) {
             if (w != null) {
-                entityList.add(w);
+                w.draw(g2);
             }
         }
-
-        for (Entity e : entityList) {
-            e.draw(g2);
+    }
+    private void drawCharacters() {
+        for (Entity c : chr[0]) {
+            if (c != null) {
+                c.draw(g2);
+            }
         }
-
-        // Empty list
-        entityList.clear();
-
-        player.draw(g2);
     }
 
     /**

@@ -7,7 +7,7 @@ public class OBJ_Wall extends Entity {
 
     public static final String objName = "WALL";
 
-    public OBJ_Wall(GamePanel gp, int x, int y, GamePanel.Direction direction) {
+    public OBJ_Wall(GamePanel gp, int x, int y, int side) {
         super(gp);
 
         worldX = x * gp.tileSize;
@@ -15,10 +15,15 @@ public class OBJ_Wall extends Entity {
 
         name = objName;
 
-        down1 = switch (direction) {
-            case UP, DOWN -> setupImage("/objects/obj_wall_middle");
-            case LEFT -> setupImage("/objects/obj_wall_left");
-            case RIGHT -> setupImage("/objects/obj_wall_right");
-        };
+        String imagePath;
+        if (side == 0) {
+            imagePath = "left";
+        } else if (side == 1) {
+            imagePath = "middle";
+        } else {
+            imagePath = "right";
+        }
+
+        up1 = down1 = left1 = right1 = setupImage("/objects/obj_wall_" + imagePath);
     }
 }

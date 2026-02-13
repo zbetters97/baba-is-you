@@ -11,7 +11,8 @@ public record LogicHandler(GamePanel gp) {
     private static final Map<String, Entity.Property> PROPERTY_MAP = Map.of(
             "WIN", Entity.Property.WIN,
             "STOP", Entity.Property.STOP,
-            "PUSH", Entity.Property.PUSH
+            "PUSH", Entity.Property.PUSH,
+            "YOU", Entity.Property.YOU
     );
 
     /**
@@ -34,6 +35,12 @@ public record LogicHandler(GamePanel gp) {
         for (Entity e : gp.obj[0]) {
             if (e != null) {
                 e.properties.clear();
+            }
+        }
+
+        for (Entity c : gp.chr[0]) {
+            if (c != null) {
+                c.properties.clear();
             }
         }
     }
@@ -148,6 +155,15 @@ public record LogicHandler(GamePanel gp) {
             // If object's name matches passed name, provide property
             if (e != null && e.name.equals(objectName)) {
                 e.properties.add(property);
+            }
+        }
+
+        // For each character in the list of characters
+        for (Entity c : gp.chr[0]) {
+
+            // If character's name matches passed name, provide property
+            if (c != null && c.name.equals(objectName)) {
+                c.properties.add(property);
             }
         }
     }

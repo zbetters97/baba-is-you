@@ -69,13 +69,13 @@ public class UI {
         g2.setFont(new Font("Arial", Font.PLAIN, 20));
 
         // Draw coordinates
-        g2.drawString("WorldX: " + gp.player.worldX, x, y);
+        g2.drawString("WorldX: " + gp.chr[0][0].worldX, x, y);
         y += lineHeight;
-        g2.drawString("WorldY: " + gp.player.worldY, x, y);
+        g2.drawString("WorldY: " + gp.chr[0][0].worldY, x, y);
         y += lineHeight;
-        g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x, y);
+        g2.drawString("Column: " + (gp.chr[0][0].worldX + gp.chr[0][0].hitbox.x) / gp.tileSize, x, y);
         y += lineHeight;
-        g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x, y);
+        g2.drawString("Row: " + (gp.chr[0][0].worldY + gp.chr[0][0].hitbox.y) / gp.tileSize, x, y);
     }
 
     private int getXforCenteredText(String text) {
