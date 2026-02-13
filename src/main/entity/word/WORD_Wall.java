@@ -3,11 +3,11 @@ package entity.word;
 import application.GamePanel;
 import entity.Entity;
 
-public class WORD_Flag extends Entity {
+public class WORD_Wall extends Entity {
 
-    public static final String wordName = "FLAG";
+    public static final String wordName = "WALL";
 
-    public WORD_Flag(GamePanel gp, int x, int y) {
+    public WORD_Wall(GamePanel gp, int x, int y) {
         super(gp);
 
         worldX = x * gp.tileSize;
@@ -17,6 +17,6 @@ public class WORD_Flag extends Entity {
         collisionOn = true;
         properties.add(Property.PUSH);
 
-        up1 = down1 = left1 = right1 = setupImage("/words/word_flag");
+        up1 = down1 = left1 = right1 = setupImage("/words/word_wall");
     }
 }

@@ -10,6 +10,8 @@ import static application.GamePanel.Direction.*;
 
 public class Player extends Entity {
 
+    public boolean canWin = false;
+
     /**
      * CONSTRUCTOR
      * @param gp GamePanel
@@ -51,8 +53,8 @@ public class Player extends Entity {
      * SET DEFAULT POSITON
      */
     private void setDefaultPosition() {
-        worldX = gp.tileSize * 18;
-        worldY = gp.tileSize * 3;
+        worldX = gp.tileSize * 11;
+        worldY = gp.tileSize * 8;
     }
 
     /**
@@ -121,31 +123,36 @@ public class Player extends Entity {
      */
     protected void checkCollision() {
         collisionOn = false;
-        gp.cChecker.checkTile(this);
-        checkObjects();
         checkWords();
-    }
-
-    private void checkObjects() {
-        int obj = gp.cChecker.checkEntity(this, gp.obj);
-
-        if (obj != -1) {
-            String name = gp.obj[0][obj].name;
-            checkFlag(name);
-        }
-    }
-
-    private void checkFlag(String name) {
-        if (name.equals(OBJ_Flag.objName)) {
-            System.out.println("WINNER!");
-        }
+        checkObjects();
     }
 
     private void checkWords() {
         int word = gp.cChecker.checkEntity(this, gp.words);
 
         if (word != -1) {
-            gp.words[0][word].move(direction);
+            checkPush(gp.words[0][word]);
+        }
+    }
+
+    private void checkObjects() {
+        int obj = gp.cChecker.checkEntity(this, gp.obj);
+
+        if (obj != -1) {
+            checkPush(gp.obj[0][obj]);
+            checkWin(gp.obj[0][obj]);
+        }
+    }
+
+    private void checkPush(Entity obj) {
+        if (obj.properties.contains(Property.PUSH) && !obj.properties.contains(Property.STOP)) {
+            obj.move(direction);
+        }
+    }
+
+    private void checkWin(Entity obj) {
+        if (obj.properties.contains(Property.WIN)) {
+            gp.win = true;
         }
     }
 

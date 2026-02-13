@@ -6,11 +6,23 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.Objects;
 
 import static application.GamePanel.Direction.*;
 
 public class Entity {
+
+    // Properties an object can have
+    public enum Property {
+        WIN,
+        STOP,
+        PUSH,
+    }
+
+    // Empty enum list to hold properties
+    public EnumSet<Entity.Property> properties = EnumSet.noneOf(Entity.Property.class);
 
     protected GamePanel gp;
 
@@ -28,7 +40,7 @@ public class Entity {
 
     /* COLLISION VALUES */
     public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
-    public boolean collisionOn = true;
+    public boolean collisionOn = false;
     protected boolean canMove = true;
 
     /* SPRITE ATTRIBUTES */
@@ -121,7 +133,6 @@ public class Entity {
      */
     protected void checkCollision() {
         collisionOn = false;
-        gp.cChecker.checkTile(this);
         gp.cChecker.checkEntity(this, gp.obj);
         gp.cChecker.checkEntity(this, gp.words);
     }

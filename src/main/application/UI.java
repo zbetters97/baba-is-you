@@ -37,7 +37,21 @@ public class UI {
      * called by draw()
      */
     private void drawHUD() {
+
+        if (gp.win) {
+            drawWin();
+        }
         drawDebug();
+    }
+
+    private void drawWin() {
+        g2.setColor(Color.ORANGE);
+        g2.setFont(new Font("Arial", Font.BOLD, 60));
+
+        int x = getXforCenteredText("WINNER");
+        int y = gp.screenHeight / 2;
+
+        g2.drawString("WINNER!", x - gp.tileSize, y);
     }
 
     /**
@@ -62,5 +76,15 @@ public class UI {
         g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x, y);
         y += lineHeight;
         g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x, y);
+    }
+
+    private int getXforCenteredText(String text) {
+        try {
+            int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+            return (gp.screenWidth / 2) - (length / 2);
+        }
+        catch (Exception e) {
+            return gp.screenWidth / 2;
+        }
     }
 }

@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class OBJ_Flag extends Entity {
 
-    public static final String objName = "Flag";
+    public static final String objName = "FLAG";
 
     public OBJ_Flag(GamePanel gp, int x, int y) {
         super(gp);

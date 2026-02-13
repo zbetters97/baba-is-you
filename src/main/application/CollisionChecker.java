@@ -5,69 +5,27 @@ import entity.Entity;
 public record CollisionChecker(GamePanel gp) {
 
     /**
-     * CHECK TILE
-     * Checks if the given entity will collide with a tile
-     * @param entity Entity to check collision for
+     * CHECK ENTITY
+     * Detects if given entity will collide with any entity from the given list
+     * @param entity Entity to check collision on
+     * @param targets List of entities to check collision against
+     * @return Entity the given entity will interact with, -1 if none
      */
-    public void checkTile(Entity entity) {
-
-        int x;
-        int y;
-        int tile = 0;
-
-        // Find tile entity will interact with
-        switch (entity.direction) {
-            case UP -> {
-
-                // Tile above entity
-                x = entity.worldX / gp.tileSize;
-                y = (entity.worldY - gp.tileSize) / gp.tileSize;
-                tile = gp.tileM.mapTileNum[0][x][y];
-            }
-            case DOWN -> {
-
-                // Tile below entity
-                x = entity.worldX / gp.tileSize;
-                y = (entity.worldY + gp.tileSize) / gp.tileSize;
-                tile = gp.tileM.mapTileNum[0][x][y];
-            }
-            case LEFT -> {
-
-                // Tile left of entity
-                x = (entity.worldX - gp.tileSize) / gp.tileSize;
-                y = entity.worldY / gp.tileSize;
-                tile = gp.tileM.mapTileNum[0][x][y];
-            }
-            case RIGHT -> {
-
-                // Tile right of entity
-                x = (entity.worldX + gp.tileSize) / gp.tileSize;
-                y = entity.worldY / gp.tileSize;
-                tile = gp.tileM.mapTileNum[0][x][y];
-            }
-        }
-
-        if (gp.tileM.tiles[tile].hasCollision) {
-            entity.collisionOn = true;
-        }
-    }
-
-    public int checkEntity(Entity entity, Entity[][] target) {
+    public int checkEntity(Entity entity, Entity[][] targets) {
 
         int index = -1;
 
+        for (int i = 0; i < targets[0].length; i++) {
 
-
-        for (int i = 0; i < target[0].length; i++) {
-
-            if (target[0][i] != null) {
+            if (targets[0][i] != null) {
 
                 entity.hitbox.x = entity.worldX;
                 entity.hitbox.y = entity.worldY;
 
-                target[0][i].hitbox.x = target[0][i].worldX;
-                target[0][i].hitbox.y = target[0][i].worldY;
+                targets[0][i].hitbox.x = targets[0][i].worldX;
+                targets[0][i].hitbox.y = targets[0][i].worldY;
 
+                // Shift hitbox to find next tile based on direction
                 switch (entity.direction) {
                     case UP -> entity.hitbox.y -= gp.tileSize;
                     case DOWN -> entity.hitbox.y += gp.tileSize;
@@ -75,22 +33,23 @@ public record CollisionChecker(GamePanel gp) {
                     case RIGHT -> entity.hitbox.x += gp.tileSize;
                 }
 
-                if (entity.hitbox.intersects(target[0][i].hitbox)) {
-                    if (target[0][i] != entity) {
+                // Entity and target collides
+                if (entity.hitbox.intersects(targets[0][i].hitbox)) {
+                    if (targets[0][i] != entity) {
                         index = i;
-                        if (target[0][i].collisionOn) {
+                        if (targets[0][i].collisionOn || targets[0][i].properties.contains(Entity.Property.STOP)) {
                             entity.collisionOn = true;
                         }
                     }
                 }
 
-                // reset entity solid area
+                // Reset entity solid area
                 entity.hitbox.x = 0;
                 entity.hitbox.y = 0;
 
-                // reset object solid area
-                target[0][i].hitbox.x = 0;
-                target[0][i].hitbox.y = 0;
+                // Reset target solid area
+                targets[0][i].hitbox.x = 0;
+                targets[0][i].hitbox.y = 0;
             }
         }
 

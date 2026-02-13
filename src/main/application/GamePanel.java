@@ -59,13 +59,15 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM = new TileManager(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
-    private LogicHandler lHandler = new LogicHandler(this);
+    private final LogicHandler lHandler = new LogicHandler(this);
 
     /* ENTITIES */
     private final ArrayList<Entity> entityList = new ArrayList<>();
     public final Player player = new Player(this);
-    public Entity[][] obj = new Entity[maxMap][10];
-    public Entity[][] words = new Entity[maxMap][10];
+    public Entity[][] obj = new Entity[maxMap][50];
+    public Entity[][] words = new Entity[maxMap][50];
+
+    public boolean win = false;
 
     /**
      * CONSTRUCTOR
