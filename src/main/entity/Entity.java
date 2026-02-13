@@ -180,10 +180,7 @@ public class Entity {
         gp.cChecker.checkEntity(this, gp.words);
 
         checkWords();
-
-        if (properties.contains(Entity.Property.YOU)) {
-            checkObjects();
-        }
+        checkObjects();
     }
 
     private void checkWords() {
@@ -213,7 +210,8 @@ public class Entity {
     }
 
     private void checkWin(Entity obj) {
-        if (obj.properties.contains(Property.WIN)) {
+        // Entity needs to be controlled by player to win
+        if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
             gp.win = true;
         }
     }

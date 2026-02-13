@@ -57,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
     private final LogicHandler lHandler = new LogicHandler(this);
+    public final EntityGenerator eGenerator = new EntityGenerator(this);
 
     /* ENTITIES */
     public Entity[][] chr = new Entity[maxWorldRow][50];

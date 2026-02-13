@@ -37,7 +37,7 @@ public record CollisionChecker(GamePanel gp) {
                 if (entity.hitbox.intersects(targets[0][i].hitbox)) {
                     if (targets[0][i] != entity) {
                         index = i;
-                        if (targets[0][i].collisionOn || targets[0][i].properties.contains(Entity.Property.STOP)) {
+                        if (targets[0][i].properties.contains(Entity.Property.STOP)) {
                             entity.collisionOn = true;
                         }
                     }

@@ -68,7 +68,7 @@ public record AssetSetter(GamePanel gp) {
         i++;
         gp.words[mapNum][i] = new WORD_Is(gp, 15, 8);
         i++;
-        gp.words[mapNum][i] = new WORD_Stop(gp, 15, 9);
+        gp.words[mapNum][i] = new WORD_Push(gp, 15, 9);
         i++;
 
         gp.words[mapNum][i] = new WORD_Baba(gp, 4, 7);

@@ -18,6 +18,6 @@ public class OBJ_Flag extends Entity {
         name = objName;
         collisionOn = false;
 
-        down1 = setupImage("/objects/obj_flag");
+        up1 = down1 = left1 = right1 = setupImage("/objects/obj_flag");
     }
 }

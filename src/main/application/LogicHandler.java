@@ -128,14 +128,19 @@ public record LogicHandler(GamePanel gp) {
             // The action applied to the object (ex: WIN)
             String predicate = words[i + 2];
 
-            // Valid linking verb and matching property to the predicate
-            if (verb.equals("IS") && PROPERTY_MAP.containsKey(predicate)) {
+            // Does not equal a rule
+            if (subject.isEmpty() || predicate.isEmpty()) continue;
+            if (!verb.equals("IS")) continue;
 
-                // Retrieve matching property
-                Entity.Property property = PROPERTY_MAP.get(predicate);
+            // Matching property to the predicate
+            Entity.Property property = PROPERTY_MAP.get(predicate);
+            if (property != null) {
+                applyPropertyRule(subject, property);
+                continue;
+            }
 
-                // Apply the rule
-                applyRule(subject, property);
+            if (gp.eGenerator.getEntity(predicate) != null) {
+                applyTransformationRule(subject, predicate);
             }
         }
     }
@@ -147,24 +152,43 @@ public record LogicHandler(GamePanel gp) {
      * @param objectName The name of the object to pass the property to
      * @param property The property the object will be receiving
      */
-    private void applyRule(String objectName, Entity.Property property) {
+    private void applyPropertyRule(String objectName, Entity.Property property) {
+        gp.obj[0] = addProperty(gp.obj[0], objectName, property);
+        gp.chr[0] = addProperty(gp.chr[0], objectName, property);
+    }
 
-        // For each object in the list of objects
-        for (Entity e : gp.obj[0]) {
+    private Entity[] addProperty(Entity[] entityList, String entityName, Entity.Property property) {
+        // For each entity in the list of entities
+        for (Entity e : entityList) {
 
-            // If object's name matches passed name, provide property
-            if (e != null && e.name.equals(objectName)) {
+            // If entity's name matches passed name, provide property
+            if (e != null && e.name.equals(entityName)) {
                 e.properties.add(property);
             }
         }
 
-        // For each character in the list of characters
-        for (Entity c : gp.chr[0]) {
+        return entityList;
+    }
 
-            // If character's name matches passed name, provide property
-            if (c != null && c.name.equals(objectName)) {
-                c.properties.add(property);
+    private void applyTransformationRule(String oldEntityName, String newEntityName) {
+       gp.obj[0] = transformEntity(gp.obj[0], oldEntityName, newEntityName);
+       gp.chr[0] = transformEntity(gp.chr[0], oldEntityName, newEntityName);
+    }
+
+    private Entity[] transformEntity(Entity[] entityList, String oldEntityName, String newEntityName) {
+        for (int i = 0; i < entityList.length; i++) {
+
+            // If entity's name matches passed name, convert to clone
+            if (entityList[i] != null && entityList[i].name.equals(oldEntityName)) {
+                Entity clone = gp.eGenerator.getEntity(newEntityName);
+                assert clone != null;
+
+                clone.worldX = entityList[i].worldX;
+                clone.worldY = entityList[i].worldY;
+                entityList[i] = clone;
             }
         }
+
+        return entityList;
     }
 }
