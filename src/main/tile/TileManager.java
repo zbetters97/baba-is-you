@@ -53,12 +53,6 @@ public class TileManager {
             }
 
             sc.close();
-
-            // Assign new world dimensions
-           // gp.maxWorldCol = mapLength;
-           // gp.maxWorldRow = mapLength;
-           // gp.worldWidth = gp.tileSize * mapLength;
-           // gp.worldHeight = gp.tileSize * mapLength;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -92,7 +86,6 @@ public class TileManager {
         tiles = new Tile[tileNumbers.size()];
 
         String tileNumber;
-        boolean hasCollision;
 
         // Loop through all tile data in fileNames
         for (int i = 0; i < tileNumbers.size(); i++) {
@@ -125,21 +118,32 @@ public class TileManager {
         }
     }
 
-
+    /**
+     * DRAW
+     * Draws all the tiles to the screen
+     * Called by GamePanel
+     * @param g2 Graphics object
+     */
     public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
         int x = 0;
         int y = 0;
 
+        // Loop until column and row are filled
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
+            // Grab tile
             int tileNum = mapTileNum[0][worldCol][worldRow];
 
+            // Draw to x/y
             g2.drawImage(tiles[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
+
+            // Proceed to next column
             worldCol++;
             x += gp.tileSize;
 
+            // Reached last column, jump to next row and first column
             if (worldCol == gp.maxScreenCol) {
                 worldCol = 0;
                 worldRow++;
@@ -151,9 +155,15 @@ public class TileManager {
         drawGrid(g2);
     }
 
+    /**
+     * DRAW GRID
+     * Draws a gray grid to the screen
+     * Called by draw()
+     * @param g2 Graphics object
+     */
     private void drawGrid(Graphics2D g2) {
         // Semi-transparent white
-        g2.setColor(new Color(255, 255, 255, 80));
+        g2.setColor(new Color(255, 255, 255, 50));
 
         // Vertical lines
         for (int col = 0; col <= gp.maxWorldCol; col++) {
@@ -167,5 +177,4 @@ public class TileManager {
             g2.drawLine(0, y, gp.maxWorldCol * gp.tileSize, y);
         }
     }
-
 }

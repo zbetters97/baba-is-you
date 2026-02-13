@@ -1,22 +1,11 @@
 package entity.word;
 
 import application.GamePanel;
-import entity.Entity;
+import entity.WordEntity;
 
-public class WORD_Stop extends Entity {
+public class WORD_Stop extends WordEntity {
 
-    public static final String wordName = "STOP";
-
-    public WORD_Stop(GamePanel gp, int x, int y) {
-        super(gp);
-
-        worldX = x * gp.tileSize;
-        worldY = y * gp.tileSize;
-
-        name = wordName;
-        collisionOn = true;
-        properties.add(Property.PUSH);
-
-        up1 = down1 = left1 = right1 = setupImage("/words/word_stop");
+    public WORD_Stop(GamePanel gp, int col, int row) {
+        super(gp, col, row, "STOP");
     }
 }

@@ -1,22 +1,11 @@
 package entity.word;
 
 import application.GamePanel;
-import entity.Entity;
+import entity.WordEntity;
 
-public class WORD_Flag extends Entity {
+public class WORD_Flag extends WordEntity {
 
-    public static final String wordName = "FLAG";
-
-    public WORD_Flag(GamePanel gp, int x, int y) {
-        super(gp);
-
-        worldX = x * gp.tileSize;
-        worldY = y * gp.tileSize;
-
-        name = wordName;
-        collisionOn = true;
-        properties.add(Property.PUSH);
-
-        up1 = down1 = left1 = right1 = setupImage("/words/word_flag");
+    public WORD_Flag(GamePanel gp, int col, int row) {
+        super(gp, col, row, "FLAG");
     }
 }
