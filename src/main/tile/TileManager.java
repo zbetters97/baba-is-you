@@ -135,6 +135,7 @@ public class TileManager {
         }
     }
 
+
     public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
@@ -156,5 +157,25 @@ public class TileManager {
                 y += gp.tileSize;
             }
         }
+
+        drawGrid(g2);
     }
+
+    private void drawGrid(Graphics2D g2) {
+        // Semi-transparent white
+        g2.setColor(new Color(255, 255, 255, 80));
+
+        // Vertical lines
+        for (int col = 0; col <= gp.maxWorldCol; col++) {
+            int x = col * gp.tileSize;
+            g2.drawLine(x, 0, x, gp.maxWorldRow * gp.tileSize);
+        }
+
+        // Horizontal lines
+        for (int row = 0; row <= gp.maxWorldRow; row++) {
+            int y = row * gp.tileSize;
+            g2.drawLine(0, y, gp.maxWorldCol * gp.tileSize, y);
+        }
+    }
+
 }

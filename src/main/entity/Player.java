@@ -10,8 +10,6 @@ import static application.GamePanel.Direction.*;
 
 public class Player extends Entity {
 
-    private boolean canWin = true;
-
     /**
      * CONSTRUCTOR
      * @param gp GamePanel
@@ -138,7 +136,7 @@ public class Player extends Entity {
     }
 
     private void checkFlag(String name) {
-        if (name.equals(OBJ_Flag.objName) && canWin) {
+        if (name.equals(OBJ_Flag.objName)) {
             System.out.println("WINNER!");
         }
     }
@@ -161,9 +159,6 @@ public class Player extends Entity {
         image = getSprite();
 
         g2.drawImage(image, worldX, worldY, null);
-
-        // Draw hitbox (debug)
-        g2.drawRect(worldX, worldY, hitbox.width, hitbox.height);
     }
 
     /** GET CURRENT SPRITE TO DRAW **/

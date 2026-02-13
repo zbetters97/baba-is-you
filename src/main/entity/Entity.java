@@ -1,7 +1,6 @@
 package entity;
 
 import application.GamePanel;
-import entity.word.WORD_Is;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -174,8 +173,5 @@ public class Entity {
 
         // Draw sprite
         g2.drawImage(image, worldX, worldY, null);
-
-        // Draw hitbox (debug)
-        g2.drawRect(worldX, worldY, hitbox.width, hitbox.height);
     }
 }

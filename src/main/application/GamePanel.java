@@ -53,7 +53,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     /* GAME STATES */
     public int gameState;
-    public final int titleState = 0;
     public final int playState = 1;
 
     /* HANDLERS */
@@ -204,9 +203,16 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void drawToTempScreen() {
-      drawTiles();
-      drawEntities();
-      ui.draw(g2);
+        clearBackBuffer();
+        drawTiles();
+        drawEntities();
+        ui.draw(g2);
+    }
+
+    // Fills the background with black to eliminate artifacting
+    private void clearBackBuffer() {
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
     }
 
     /** DRAW METHODS **/
