@@ -29,7 +29,7 @@ public class Entity {
 
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
-    public String name;
+    public String name, baseName;
 
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = DOWN;
@@ -100,7 +100,11 @@ public class Entity {
         }
     }
 
-    protected void moving() {
+    /**
+     * MOVING
+     * Moves the entity one tile over if able
+     */
+    private void moving() {
         if (canMove) {
             switch (direction) {
                 case UP -> worldY -= speed;
@@ -121,6 +125,7 @@ public class Entity {
             spriteNum = 1;
             spriteCounter = 0;
             collisionOn = true;
+            gp.lHandler.checkRules();
         }
     }
 
@@ -142,7 +147,7 @@ public class Entity {
      * UPDATE DIRECTION
      * Handles logic involving moving the entity
      */
-    protected void updateDirection() {
+    private void updateDirection() {
         updateFacing();
         checkCollision();
         move(direction);
@@ -174,15 +179,52 @@ public class Entity {
      * CHECK COLLISION
      * Checks if the entity collides with something
      */
-    protected void checkCollision() {
+    private void checkCollision() {
         collisionOn = false;
         gp.cChecker.checkEntity(this, gp.obj);
         gp.cChecker.checkEntity(this, gp.words);
 
-        checkWords();
+        // If self has WIN property, player wins
+        checkWin(this);
+
+        checkCharacters();
         checkObjects();
+        checkWords();
     }
 
+    /**
+     * CHECK CHARACTERS
+     * Checks if the entity will interact with a character
+     */
+    private void checkCharacters() {
+        int chr = gp.cChecker.checkEntity(this, gp.chr);
+
+        // If self has WIN property, player wins
+        checkWin(this);
+
+        if (chr != -1) {
+            checkPush(gp.obj[0][chr]);
+            checkWin(gp.chr[0][chr]);
+        }
+    }
+
+    /**
+     * CHECK OBJECTS
+     * Checks if the entity will interact with an object
+     */
+    private void checkObjects() {
+        int obj = gp.cChecker.checkEntity(this, gp.obj);
+
+        if (obj != -1) {
+            checkPush(gp.obj[0][obj]);
+            checkWin(gp.obj[0][obj]);
+        }
+    }
+
+    /**
+     * CHECK WORDS
+     * Checks if the entity will interact with a word
+     */
     private void checkWords() {
         int word = gp.cChecker.checkEntity(this, gp.words);
 
@@ -191,24 +233,20 @@ public class Entity {
         }
     }
 
-    private void checkObjects() {
-        int obj = gp.cChecker.checkEntity(this, gp.obj);
-
-        // If self has WIN property, player wins
-        checkWin(this);
-
-        if (obj != -1) {
-            checkPush(gp.obj[0][obj]);
-            checkWin(gp.obj[0][obj]);
-        }
-    }
-
+    /**
+     * CHECK PUSH
+     * Pushes the passed object if able
+     */
     private void checkPush(Entity obj) {
         if (obj.properties.contains(Property.PUSH) && !obj.properties.contains(Property.STOP)) {
             obj.move(direction);
         }
     }
 
+    /**
+     * CHECK WIN
+     * Checks if the entity can win the game/level
+     */
     private void checkWin(Entity obj) {
         // Entity needs to be controlled by player to win
         if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
@@ -221,7 +259,7 @@ public class Entity {
      * Repositions the entity's X, Y based on direction and speed
      * Called by updateDirection() if o collision
      */
-    protected void move(GamePanel.Direction movingDirection) {
+    private void move(GamePanel.Direction movingDirection) {
         if (!moving && !properties.contains(Property.STOP)) {
             direction = movingDirection;
 
@@ -237,13 +275,34 @@ public class Entity {
      * CYCLE SPRITES
      * Changes the animation counter for draw to render the correct sprite
      */
-    protected void cycleSprites() {
+    private void cycleSprites() {
         if (pixelCounter > 0 && pixelCounter < gp.tileSize) {
             spriteNum = 2;
         }
         else  {
             spriteNum = 1;
         }
+    }
+
+    /**
+     * SET FORM
+     * Changes the entity's properties to match the new form
+     * @param newFormName The new form the entity will possess
+     */
+    public void setForm(String newFormName) {
+        Entity newForm = gp.eGenerator.getEntity(newFormName);
+        if (newForm == null) return;
+
+        // Copy all attributes from new form
+        this.name = newForm.name;
+        this.up1 = newForm.up1;
+        this.up2 = newForm.up2;
+        this.down1 = newForm.down1;
+        this.down2 = newForm.down2;
+        this.left1 = newForm.left1;
+        this.left2 = newForm.left2;
+        this.right1 = newForm.right1;
+        this.right2 = newForm.right2;
     }
 
     /**

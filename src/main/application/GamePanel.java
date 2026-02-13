@@ -56,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM = new TileManager(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
-    private final LogicHandler lHandler = new LogicHandler(this);
+    public final LogicHandler lHandler = new LogicHandler(this);
     public final EntityGenerator eGenerator = new EntityGenerator(this);
 
     /* ENTITIES */
@@ -93,6 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         tileM.loadMap();
         aSetter.setup();
+        lHandler.checkRules();
 
        // player.setDefaultValues();
 
@@ -177,9 +178,9 @@ public class GamePanel extends JPanel implements Runnable {
         updateCharacters();
         updateObjects();
         updateWords();
-        lHandler.update();
     }
 
+    /** UPDATE METHODS **/
     private void updateCharacters() {
         for (int i = 0; i < chr[0].length; i++) {
             if (chr[0][i] != null) {
@@ -187,7 +188,6 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
-
     private void updateObjects() {
         for (int i = 0; i < obj[0].length; i++) {
             if (obj[0][i] != null) {
@@ -195,7 +195,6 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
-
     private void updateWords() {
         for (int i = 0; i < words[0].length; i++) {
             if (words[0][i] != null) {

@@ -12,13 +12,13 @@ public class CHR_Baba extends Entity {
     public CHR_Baba(GamePanel gp, int col, int row) {
         super(gp);
 
-        name = "BABA";
+        name = chrName;
+        baseName = name;
+
         direction = RIGHT;
 
         worldX = col * gp.tileSize;
         worldY = row * gp.tileSize;
-
-       // properties.add(Property.YOU);
     }
 
     protected void getImages() {

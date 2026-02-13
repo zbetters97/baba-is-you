@@ -14,6 +14,7 @@ public class OBJ_Wall extends Entity {
         worldY = y * gp.tileSize;
 
         name = objName;
+        baseName = name;
 
         String imagePath;
         if (side == 0) {

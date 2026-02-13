@@ -7,7 +7,7 @@ import java.util.Map;
 
 public record LogicHandler(GamePanel gp) {
 
-    // Map words to a property
+    // Words mapped to a property
     private static final Map<String, Entity.Property> PROPERTY_MAP = Map.of(
             "WIN", Entity.Property.WIN,
             "STOP", Entity.Property.STOP,
@@ -20,7 +20,7 @@ public record LogicHandler(GamePanel gp) {
      * Runs the methods in LogicHandler
      * Called by GamePanel
      */
-    public void update() {
+    public void checkRules() {
         clearProperties();
         scanColumnRules();
         scanRowRules();
@@ -149,46 +149,62 @@ public record LogicHandler(GamePanel gp) {
      * APPLY RULE
      * Finds the objects that have the name
      * And assigns the given property to that object
+     * Called by checkRules()
      * @param objectName The name of the object to pass the property to
      * @param property The property the object will be receiving
      */
     private void applyPropertyRule(String objectName, Entity.Property property) {
-        gp.obj[0] = addProperty(gp.obj[0], objectName, property);
-        gp.chr[0] = addProperty(gp.chr[0], objectName, property);
+        addProperty(gp.obj[0], objectName, property);
+        addProperty(gp.chr[0], objectName, property);
     }
 
-    private Entity[] addProperty(Entity[] entityList, String entityName, Entity.Property property) {
+    /**
+     * ADD PROPERTY
+     * Adds the property given to all entities found in the
+     *  list that matches the given name
+     * Called by applyPropertyRule()
+     * @param entityList List of entities in GamePanel
+     * @param entityName Name of entity to locate in the list
+     * @param property New property each entity will be given
+     */
+    private void addProperty(Entity[] entityList, String entityName, Entity.Property property) {
         // For each entity in the list of entities
         for (Entity e : entityList) {
 
-            // If entity's name matches passed name, provide property
-            if (e != null && e.name.equals(entityName)) {
+            // If entity's name (current or base form) matches passed name, provide property
+            if (e != null && (e.baseName.equals(entityName) || e.name.equals(entityName))) {
                 e.properties.add(property);
             }
         }
-
-        return entityList;
     }
 
+    /**
+     * APPLY TRANSFORMATION RULE
+     * Runs transformation rules for all entities where applicable
+     * Called by checkRules()
+     * @param oldEntityName The name of the entity to be transformed
+     * @param newEntityName The name of the new entity that will be created
+     */
     private void applyTransformationRule(String oldEntityName, String newEntityName) {
-       gp.obj[0] = transformEntity(gp.obj[0], oldEntityName, newEntityName);
-       gp.chr[0] = transformEntity(gp.chr[0], oldEntityName, newEntityName);
+       transformEntity(gp.obj[0], oldEntityName, newEntityName);
+       transformEntity(gp.chr[0], oldEntityName, newEntityName);
     }
 
-    private Entity[] transformEntity(Entity[] entityList, String oldEntityName, String newEntityName) {
-        for (int i = 0; i < entityList.length; i++) {
+    /**
+     * TRANSFORM ENTITY
+     * Parses through the given list and applies form change if applicable
+     * Called by applyTransformationRule()
+     * @param entityList List of entities to be parsed over
+     * @param oldEntityName The name of the entity to be transformed
+     * @param newEntityName The name of the new entity that will be created
+     */
+    private void transformEntity(Entity[] entityList, String oldEntityName, String newEntityName) {
+        for (Entity entity : entityList) {
 
-            // If entity's name matches passed name, convert to clone
-            if (entityList[i] != null && entityList[i].name.equals(oldEntityName)) {
-                Entity clone = gp.eGenerator.getEntity(newEntityName);
-                assert clone != null;
-
-                clone.worldX = entityList[i].worldX;
-                clone.worldY = entityList[i].worldY;
-                entityList[i] = clone;
+            // If entity's name (current form, not base) matches passed name, transform to new entity
+            if (entity != null && entity.name.equals(oldEntityName)) {
+                entity.setForm(newEntityName);
             }
         }
-
-        return entityList;
     }
 }
