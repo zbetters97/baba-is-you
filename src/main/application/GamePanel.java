@@ -60,6 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM = new TileManager(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
+    private LogicHandler lHandler = new LogicHandler(this);
 
     /* ENTITIES */
     private final ArrayList<Entity> entityList = new ArrayList<>();
@@ -178,6 +179,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.update();
         updateObjects();
         updateWords();
+        lHandler.update();
     }
 
     private void updateObjects() {

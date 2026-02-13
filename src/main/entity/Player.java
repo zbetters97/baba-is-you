@@ -68,43 +68,6 @@ public class Player extends Entity {
     }
 
     /**
-     * CHECK COLLISION
-     * Checks if the entity collides with something
-     */
-    protected void checkCollision() {
-        collisionOn = false;
-        gp.cChecker.checkTile(this);
-        checkObjects();
-        checkWords();
-    }
-
-    private void checkObjects() {
-        int obj = gp.cChecker.checkEntity(this, gp.obj);
-
-        if (obj != -1) {
-            String name = gp.obj[0][obj].name;
-            checkFlag(name);
-        }
-    }
-
-    private void checkFlag(String name) {
-        if (name.equals(OBJ_Flag.objName) && canWin) {
-            System.out.println("WINNER!");
-        }
-    }
-
-    private void checkWords() {
-        int word = gp.cChecker.checkEntity(this, gp.words);
-
-        if (word != -1) {
-            gp.words[0][word].checkCollision();
-            if (!gp.words[0][word].collisionOn) {
-                gp.words[0][word].move(direction);
-            }
-        }
-    }
-
-    /**
      * HANDLE MOVEMENT INPUT
      * Calls directionPressed() to update direction when an arrow key is pressed
      * Called by update() if current action allows
@@ -152,6 +115,40 @@ public class Player extends Entity {
         else if (right) nextDirection = RIGHT;
 
         direction = nextDirection;
+    }
+
+    /**
+     * CHECK COLLISION
+     * Checks if the entity collides with something
+     */
+    protected void checkCollision() {
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+        checkObjects();
+        checkWords();
+    }
+
+    private void checkObjects() {
+        int obj = gp.cChecker.checkEntity(this, gp.obj);
+
+        if (obj != -1) {
+            String name = gp.obj[0][obj].name;
+            checkFlag(name);
+        }
+    }
+
+    private void checkFlag(String name) {
+        if (name.equals(OBJ_Flag.objName) && canWin) {
+            System.out.println("WINNER!");
+        }
+    }
+
+    private void checkWords() {
+        int word = gp.cChecker.checkEntity(this, gp.words);
+
+        if (word != -1) {
+            gp.words[0][word].move(direction);
+        }
     }
 
     /**

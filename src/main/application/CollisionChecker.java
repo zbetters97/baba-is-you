@@ -56,6 +56,8 @@ public record CollisionChecker(GamePanel gp) {
 
         int index = -1;
 
+
+
         for (int i = 0; i < target[0].length; i++) {
 
             if (target[0][i] != null) {

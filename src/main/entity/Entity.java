@@ -17,7 +17,7 @@ public class Entity {
 
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
-    protected String name;
+    public String name;
 
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = DOWN;
@@ -103,6 +103,7 @@ public class Entity {
             pixelCounter = 0;
             spriteNum = 1;
             spriteCounter = 0;
+            collisionOn = true;
         }
     }
 
