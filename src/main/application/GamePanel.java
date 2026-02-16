@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static UtilityTool utility = new UtilityTool();
 
     /* CONTROLS / SOUND / UI */
-    public KeyHandler keyH = new KeyHandler();
+    public KeyHandler keyH = new KeyHandler(this);
     public UI ui = new UI(this);
 
     /* SCREEN SETTINGS */
@@ -265,5 +265,11 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics g = getGraphics();
         g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
         g.dispose();
+    }
+
+    public void resetLevel() {
+        tileM.loadMap();
+        aSetter.setup();
+        lHandler.checkRules();
     }
 }

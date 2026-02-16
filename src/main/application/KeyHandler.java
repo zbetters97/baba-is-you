@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
+    private final GamePanel gp;
+
     /* GENERAL ATTRIBUTES */
     private boolean lock = true;
 
@@ -14,17 +16,15 @@ public class KeyHandler implements KeyListener {
     public final int btn_LEFT = KeyEvent.VK_LEFT;
     public final int btn_RIGHT = KeyEvent.VK_RIGHT;
     public final int btn_A = KeyEvent.VK_A;
-    public final int btn_B = KeyEvent.VK_S;
-    public final int btn_R = KeyEvent.VK_E;
 
     /* CONFIG VALUES */
-    public boolean upPressed, downPressed, leftPressed, rightPressed,
-            aPressed, bPressed, rPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, aPressed;
 
     /**
      * CONSTRUCTOR
      */
-    public KeyHandler() {
+    public KeyHandler(GamePanel gp) {
+        this.gp = gp;
     }
 
     /**
@@ -60,14 +60,6 @@ public class KeyHandler implements KeyListener {
             aPressed = true;
             lock = false;
         }
-        if (code == btn_B && lock) {
-            bPressed = true;
-            lock = false;
-        }
-        if (code == btn_R && lock) {
-            rPressed = true;
-            lock = false;
-        }
     }
 
     /**
@@ -91,15 +83,8 @@ public class KeyHandler implements KeyListener {
             rightPressed = false;
         }
         if (code == btn_A) {
+            gp.resetLevel();
             aPressed = false;
-            lock = true;
-        }
-        if (code == btn_B) {
-            bPressed = false;
-            lock = true;
-        }
-        if (code == btn_R) {
-            rPressed = false;
             lock = true;
         }
     }
