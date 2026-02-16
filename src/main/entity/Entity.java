@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 
 import static application.GamePanel.Direction.*;
@@ -36,7 +37,7 @@ public class Entity {
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = DOWN;
     public int speed = 4;
-    protected boolean moving = false;
+    public boolean moving = false;
 
     /* ANIMATION VALUES */
     protected int pixelCounter = 0;
@@ -144,18 +145,9 @@ public class Entity {
      */
     private void handleMovementInput() {
         if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
-            updateDirection();
+            updateFacing();
+            move(direction);
         }
-    }
-
-    /**
-     * UPDATE DIRECTION
-     * Handles logic involving moving the entity
-     */
-    private void updateDirection() {
-        updateFacing();
-        checkCollision();
-        move(direction);
     }
 
     /**
@@ -164,80 +156,10 @@ public class Entity {
      * Called by directionPressed() if current action allows
      */
     private void updateFacing() {
-
-        GamePanel.Direction nextDirection = direction;
-
-        boolean up = gp.keyH.upPressed;
-        boolean down = gp.keyH.downPressed;
-        boolean left = gp.keyH.leftPressed;
-        boolean right = gp.keyH.rightPressed;
-
-        if (up) nextDirection = UP;
-        else if (down) nextDirection = DOWN;
-        else if (left) nextDirection = LEFT;
-        else if (right) nextDirection = RIGHT;
-
-        direction = nextDirection;
-    }
-
-    /**
-     * CHECK COLLISION
-     * Checks if the entity collides with something
-     */
-    private void checkCollision() {
-        collisionOn = false;
-
-        gp.cChecker.checkEntity(this, gp.obj);
-        gp.cChecker.checkEntity(this, gp.words);
-
-        // If self has WIN property, player wins
-        checkWin(this);
-
-        checkEntities(gp.obj);
-        checkEntities(gp.chr);
-        checkEntities(gp.words);
-    }
-
-    private void checkEntities(Entity[][] entities) {
-        int ent = gp.cChecker.checkEntity(this, entities);
-
-        if (ent != -1) {
-            checkSink(entities[gp.currentMap][ent]);
-            checkPush(entities[gp.currentMap][ent]);
-            checkWin(entities[gp.currentMap][ent]);
-        }
-    }
-
-    /**
-     * CHECK PUSH
-     * Pushes the passed object if able
-     */
-    private void checkPush(Entity obj) {
-        if (obj.properties.contains(Property.PUSH) && !obj.properties.contains(Property.STOP)) {
-            obj.move(direction);
-        }
-    }
-
-    /**
-     * CHECK SINK
-     * Sets alive to false if the object has SINK
-     */
-    private void checkSink(Entity obj) {
-        if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
-            alive = false;
-            obj.alive = false;
-        }
-    }
-
-    /**
-     * CHECK WIN
-     * Checks if the entity can win the game/level
-     */
-    private void checkWin(Entity obj) {
-        // Entity needs to be controlled by player to win
-        if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
-            gp.win = true;
-        }
+        if (gp.keyH.upPressed) direction = UP;
+        else if (gp.keyH.downPressed) direction = DOWN;
+        else if (gp.keyH.leftPressed) direction = LEFT;
+        else if (gp.keyH.rightPressed) direction = RIGHT;
     }
 
     /**
@@ -249,11 +171,96 @@ public class Entity {
         if (!moving && !properties.contains(Property.STOP)) {
             direction = movingDirection;
 
-            checkCollision();
-
-            if (!collisionOn) {
-                moving = true;
+            if (canMove(this, direction)) {
+                pushEntities(this, direction);
             }
+        }
+    }
+
+    private boolean canMove(Entity entity, GamePanel.Direction dir) {
+        // Tile with collision in the way
+        if (gp.cChecker.tileBlocked(entity, dir)) {
+            return false;
+        }
+
+        // Get all entities sitting on the next tile
+        List<Entity> stack = gp.cChecker.getEntitiesAtNextTile(entity, dir);
+        for (Entity ent : stack) {
+            // Can't move, entity has STOP
+            if (ent.properties.contains(Property.STOP)) {
+                return false;
+            }
+            // Entity has PUSH, attempt to move
+            else if (ent.properties.contains(Property.PUSH)) {
+
+                // Can't move
+                if (!canMove(ent, dir)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void pushEntities(Entity entity, GamePanel.Direction dir) {
+
+        // Get all entities at the next tile
+        for (Entity ent : gp.cChecker.getEntitiesAtNextTile(entity, dir)) {
+
+            // Entity is pushable
+            if (ent.properties.contains(Property.PUSH)) {
+                pushEntities(ent, dir);
+            }
+        }
+
+        entity.moving = true;
+        entity.direction = dir;
+
+        // Check for rules in play
+        checkRules(entity);
+    }
+
+    private void checkRules(Entity entity) {
+        checkEntities(entity, gp.words);
+        checkEntities(entity, gp.obj);
+        checkEntities(entity, gp.chr);
+        checkWin(entity, this);
+    }
+
+    /**
+     * CHECK ENTITIES
+     * Checks each type of collision for given entity list
+     * @param entities List of entities to check collision against
+     */
+    private void checkEntities(Entity entity, Entity[][] entities) {
+        int ent = gp.cChecker.checkEntity(entity, entities);
+
+        if (ent != -1) {
+            checkSink(entity, entities[gp.currentMap][ent]);
+            checkWin(entity, entities[gp.currentMap][ent]);
+        }
+    }
+
+    /**
+     * CHECK SINK
+     * Sets alive to false if the object has SINK
+     */
+    private void checkSink(Entity entity, Entity obj) {
+        if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
+            entity.alive = false;
+            obj.alive = false;
+        }
+    }
+
+    /**
+     * CHECK WIN
+     * Checks if the entity can win the game/level
+     */
+    private void checkWin(Entity entity, Entity obj) {
+        // Entity needs to be controlled by player to win
+        if (entity.properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
+            gp.win = true;
         }
     }
 

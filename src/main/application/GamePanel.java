@@ -173,9 +173,9 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        updateEntities(chr[currentMap]);
-        updateEntities(obj[currentMap]);
         updateEntities(words[currentMap]);
+        updateEntities(obj[currentMap]);
+        updateEntities(chr[currentMap]);
 
         // Checks rules once per update if turned on by an entity
         if (rulesCheck) {

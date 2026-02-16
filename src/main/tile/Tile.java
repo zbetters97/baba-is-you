@@ -6,4 +6,6 @@ import java.awt.image.BufferedImage;
 public class Tile {
     // Sprite file
     public BufferedImage image;
+
+    public boolean hasCollision = false;
 }

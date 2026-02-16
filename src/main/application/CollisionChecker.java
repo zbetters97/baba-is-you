@@ -2,7 +2,59 @@ package application;
 
 import entity.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record CollisionChecker(GamePanel gp) {
+
+    public List<Entity> getEntitiesAtNextTile(Entity entity, GamePanel.Direction dir) {
+        int nextX = entity.worldX;
+        int nextY = entity.worldY;
+
+        // Find next X/Y using direction
+        switch (dir) {
+            case UP -> nextY -= gp.tileSize;
+            case DOWN -> nextY += gp.tileSize;
+            case LEFT -> nextX -= gp.tileSize;
+            case RIGHT -> nextX += gp.tileSize;
+        }
+
+        // Get all entities at the next tile
+        List<Entity> result = new ArrayList<>();
+        for (Entity[] group : new Entity[][] { gp.words[gp.currentMap], gp.chr[gp.currentMap], gp.obj[gp.currentMap]}) {
+            for (Entity ent : group) {
+                if (ent != null && ent.worldX == nextX && ent.worldY == nextY) {
+                    result.add(ent);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public boolean tileBlocked(Entity entity, GamePanel.Direction dir) {
+        int nextX = entity.worldX;
+        int nextY = entity.worldY;
+
+        // Find next tile using direction and X/Y
+        switch (dir) {
+            case UP -> nextY -= gp.tileSize;
+            case DOWN -> nextY += gp.tileSize;
+            case LEFT -> nextX -= gp.tileSize;
+            case RIGHT -> nextX += gp.tileSize;
+        }
+
+        // Tile out of bounds
+        if (gp.cChecker.isOutOfBounds(nextX, nextY)) {
+            return true;
+        }
+
+        // Retrieve tile object at index
+        int tile = gp.tileM.mapTileNum[gp.currentMap][nextX / gp.tileSize][nextY / gp.tileSize];
+
+        // True if tile has collision
+        return gp.tileM.tiles[tile].hasCollision;
+    }
 
     /**
      * CHECK ENTITY
@@ -14,7 +66,6 @@ public record CollisionChecker(GamePanel gp) {
     public int checkEntity(Entity entity, Entity[][] targets) {
 
         int index = -1;
-
         for (int i = 0; i < targets[1].length; i++) {
 
             if (targets[gp.currentMap][i] != null) {
@@ -43,7 +94,7 @@ public record CollisionChecker(GamePanel gp) {
                     }
                 }
 
-                if (isOutOfBounds(entity)) {
+                if (isOutOfBounds(entity.hitbox.x, entity.hitbox.y)) {
                     entity.collisionOn = true;
                 }
 
@@ -63,11 +114,13 @@ public record CollisionChecker(GamePanel gp) {
     /**
      * IS OUT-OF-BOUNDS
      * Checks if the given entity's hitbox is out of world boundary
-     * @param entity Entity to check collision on
+     * @param x X coordinate of entity
+     * @param y Y coordinate of entity
      * @return True if entity is out of bounds
      */
-    private boolean isOutOfBounds(Entity entity) {
-        return entity.hitbox.x < 0 || entity.hitbox.x > gp.screenWidth - gp.tileSize ||
-                entity.hitbox.y < 0 || entity.hitbox.y > gp.screenHeight - gp.tileSize;
+    private boolean isOutOfBounds(int x, int y) {
+        return x < 0 || x > gp.screenWidth - gp.tileSize ||
+                y < 0 || y > gp.screenHeight - gp.tileSize;
     }
+
 }

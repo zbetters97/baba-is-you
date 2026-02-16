@@ -10,45 +10,15 @@ import entity.word.*;
 public record AssetSetter(GamePanel gp) {
 
     public void setup() {
-        setCharacters();
-        setObjects();
-        setWords();
+
+        if (gp.currentMap == 0) setupLevelOne();
+        else setupLevelTwo();
     }
 
-    private void setCharacters() {
+    private void setupLevelOne() {
         int mapNum = 0;
         int i = 0;
-
         gp.chr[mapNum][i] = new CHR_Baba(gp, 11, 8);
-
-        mapNum = 1;
-        i = 0;
-
-        gp.chr[mapNum][i] = new CHR_Baba(gp, 15, 5);
-    }
-
-    private void setObjects() {
-        int mapNum = 0;
-        int i = 0;
-
-        i = setWalls(mapNum, i);
-
-        gp.obj[mapNum][i] = new OBJ_Flag(gp, 19, 8);
-
-        mapNum = 1;
-        i = 0;
-
-        gp.obj[mapNum][i] = new OBJ_Rock(gp, 18, 5);
-        i++;
-
-        gp.obj[mapNum][i] = new OBJ_Water(gp, 14, 7);
-        i++;
-        gp.obj[mapNum][i] = new OBJ_Water(gp, 15, 7);
-        i++;
-        gp.obj[mapNum][i] = new OBJ_Water(gp, 16, 7);
-    }
-
-    private int setWalls(int mapNum, int i) {
 
         gp.obj[mapNum][i] = new OBJ_Wall(gp, 10, 6, 0, 0);
         i++;
@@ -69,13 +39,9 @@ public record AssetSetter(GamePanel gp) {
         gp.obj[mapNum][i] = new OBJ_Wall(gp, 20, 10, 0, 2);
         i++;
 
-        return i;
-    }
+        gp.obj[mapNum][i] = new OBJ_Flag(gp, 19, 8);
 
-    private void setWords() {
-        int mapNum = 0;
-        int i = 0;
-
+        i = 0;
         gp.words[mapNum][i] = new WORD_Baba(gp, 4, 7);
         i++;
         gp.words[mapNum][i] = new WORD_Is(gp, 4, 8);
@@ -95,14 +61,77 @@ public record AssetSetter(GamePanel gp) {
         gp.words[mapNum][i] = new WORD_Is(gp, 15, 8);
         i++;
         gp.words[mapNum][i] = new WORD_Push(gp, 15, 9);
+    }
 
-        mapNum = 1;
+    private void setupLevelTwo() {
+        int mapNum = 1;
+        int i = 0;
+        gp.chr[mapNum][i] = new CHR_Baba(gp, 15, 3);
+
+        gp.obj[mapNum][i] = new OBJ_Rock(gp, 18, 3);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Rock(gp, 18, 5);
+        i++;
+
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 14, 7);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 15, 7);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 16, 7);
+        i++;
+
+        gp.obj[mapNum][i] = new OBJ_Flag(gp, 11, 13);
+        i++;
+
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 11, 11);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 12, 11);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 13, 11);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 11, 12);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 12, 12);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 13, 12);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 12, 13);
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 13, 13);
+
         i = 0;
+        gp.words[mapNum][i] = new WORD_Baba(gp, 0, 0);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 0, 1);
+        i++;
+        gp.words[mapNum][i] = new WORD_You(gp, 0, 2);
+        i++;
 
-        gp.words[mapNum][i] = new WORD_Baba(gp, 4, 7);
+        gp.words[mapNum][i] = new WORD_Wall(gp, 1, 0);
         i++;
-        gp.words[mapNum][i] = new WORD_Is(gp, 4, 8);
+        gp.words[mapNum][i] = new WORD_Is(gp, 1, 1);
         i++;
-        gp.words[mapNum][i] = new WORD_You(gp, 4, 9);
+        gp.words[mapNum][i] = new WORD_Stop(gp, 1, 2);
+        i++;
+
+        gp.words[mapNum][i] = new WORD_Water(gp, 12, 4);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 12, 5);
+        i++;
+        gp.words[mapNum][i] = new WORD_Sink(gp, 12, 6);
+        i++;
+
+        gp.words[mapNum][i] = new WORD_Rock(gp, 19, 9);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 20, 9);
+        i++;
+        gp.words[mapNum][i] = new WORD_Push(gp, 21, 9);
+        i++;
+
+        gp.words[mapNum][i] = new WORD_Flag(gp, 19, 12);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 20, 12);
+        i++;
+        gp.words[mapNum][i] = new WORD_Win(gp, 21, 12);
     }
 }

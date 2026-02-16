@@ -65,6 +65,7 @@ public class TileManager {
     private void loadTileData() {
         // Arrays to hold tile attributes
         ArrayList<String> tileNumbers = new ArrayList<>();
+        ArrayList<String> collisionStatus = new ArrayList<>();
 
         // Import tile data
         InputStream is = getClass().getResourceAsStream("/maps/map_tile_data.txt");
@@ -75,6 +76,7 @@ public class TileManager {
             String line;
             while ((line = br.readLine()) != null) {
                 tileNumbers.add(line);
+                collisionStatus.add(br.readLine());
             }
             br.close();
         }
@@ -86,14 +88,16 @@ public class TileManager {
         tiles = new Tile[tileNumbers.size()];
 
         String tileNumber;
+        boolean hasCollision;
 
         // Loop through all tile data in fileNames
         for (int i = 0; i < tileNumbers.size(); i++) {
 
             // Assign each name to fileName
             tileNumber = tileNumbers.get(i);
+            hasCollision = collisionStatus.get(i).equals("true");
 
-            createTile(i, tileNumber);
+            createTile(i, tileNumber, hasCollision);
         }
     }
 
@@ -101,9 +105,10 @@ public class TileManager {
      * CREATE TILE
      * Assigns tile attributes to the tiles array
      * @param index Array index
+     * @param hasCollision True if has collision
      * @param tileNumber Tile number
      */
-    private void createTile(int index, String tileNumber) {
+    private void createTile(int index, String tileNumber, boolean hasCollision) {
         try {
             tiles[index] = new Tile();
 
@@ -112,6 +117,7 @@ public class TileManager {
             ));
 
             tiles[index].image = GamePanel.utility.scaleImage(tiles[index].image, gp.tileSize, gp.tileSize);
+            tiles[index].hasCollision = hasCollision;
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
