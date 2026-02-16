@@ -83,7 +83,7 @@ public class KeyHandler implements KeyListener {
             rightPressed = false;
         }
         if (code == btn_A) {
-            gp.resetLevel();
+            gp.setupLevel();
             aPressed = false;
             lock = true;
         }

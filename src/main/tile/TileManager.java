@@ -37,7 +37,7 @@ public class TileManager {
     public void loadMap() {
 
         // Import current map
-        InputStream inputStream = getClass().getResourceAsStream("/maps/" + gp.mapFiles[0]);
+        InputStream inputStream = getClass().getResourceAsStream("/maps/" + gp.mapFiles[gp.currentMap]);
 
         try {
             Scanner sc = new Scanner(Objects.requireNonNull(inputStream));
@@ -48,7 +48,7 @@ public class TileManager {
 
                 for (int col = 0; col < numbers.length; col++) {
                     int tileNum = Integer.parseInt(numbers[col]);
-                    mapTileNum[0][col][row] = tileNum;
+                    mapTileNum[gp.currentMap][col][row] = tileNum;
                 }
             }
 
@@ -134,7 +134,7 @@ public class TileManager {
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
             // Grab tile
-            int tileNum = mapTileNum[0][worldCol][worldRow];
+            int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
 
             // Draw to x/y
             g2.drawImage(tiles[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);

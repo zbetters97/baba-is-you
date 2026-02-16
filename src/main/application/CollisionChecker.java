@@ -15,15 +15,15 @@ public record CollisionChecker(GamePanel gp) {
 
         int index = -1;
 
-        for (int i = 0; i < targets[0].length; i++) {
+        for (int i = 0; i < targets[1].length; i++) {
 
-            if (targets[0][i] != null) {
+            if (targets[gp.currentMap][i] != null) {
 
                 entity.hitbox.x = entity.worldX;
                 entity.hitbox.y = entity.worldY;
 
-                targets[0][i].hitbox.x = targets[0][i].worldX;
-                targets[0][i].hitbox.y = targets[0][i].worldY;
+                targets[gp.currentMap][i].hitbox.x = targets[gp.currentMap][i].worldX;
+                targets[gp.currentMap][i].hitbox.y = targets[gp.currentMap][i].worldY;
 
                 // Shift hitbox to find next tile based on direction
                 switch (entity.direction) {
@@ -34,10 +34,10 @@ public record CollisionChecker(GamePanel gp) {
                 }
 
                 // Entity and target collides
-                if (entity.hitbox.intersects(targets[0][i].hitbox)) {
-                    if (targets[0][i] != entity) {
+                if (entity.hitbox.intersects(targets[gp.currentMap][i].hitbox)) {
+                    if (targets[gp.currentMap][i] != entity) {
                         index = i;
-                        if (targets[0][i].properties.contains(Entity.Property.STOP) || targets[0][i].collisionOn) {
+                        if (targets[gp.currentMap][i].properties.contains(Entity.Property.STOP) || targets[gp.currentMap][i].collisionOn) {
                             entity.collisionOn = true;
                         }
                     }
@@ -52,8 +52,8 @@ public record CollisionChecker(GamePanel gp) {
                 entity.hitbox.y = 0;
 
                 // Reset target solid area
-                targets[0][i].hitbox.x = 0;
-                targets[0][i].hitbox.y = 0;
+                targets[gp.currentMap][i].hitbox.x = 0;
+                targets[gp.currentMap][i].hitbox.y = 0;
             }
         }
 

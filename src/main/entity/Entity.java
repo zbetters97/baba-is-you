@@ -202,9 +202,9 @@ public class Entity {
         int ent = gp.cChecker.checkEntity(this, entities);
 
         if (ent != -1) {
-            checkSink(entities[0][ent]);
-            checkPush(entities[0][ent]);
-            checkWin(entities[0][ent]);
+            checkSink(entities[gp.currentMap][ent]);
+            checkPush(entities[gp.currentMap][ent]);
+            checkWin(entities[gp.currentMap][ent]);
         }
     }
 

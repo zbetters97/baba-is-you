@@ -33,13 +33,13 @@ public record LogicHandler(GamePanel gp) {
      * Called by update();
      */
     private void clearProperties() {
-        for (Entity e : gp.obj[0]) {
+        for (Entity e : gp.obj[gp.currentMap]) {
             if (e != null) {
                 e.properties.clear();
             }
         }
 
-        for (Entity c : gp.chr[0]) {
+        for (Entity c : gp.chr[gp.currentMap]) {
             if (c != null) {
                 c.properties.clear();
             }
@@ -61,7 +61,7 @@ public record LogicHandler(GamePanel gp) {
             Arrays.fill(colWords, "");
 
             // Loop over all pre-existing words
-            for (Entity word : gp.words[0]) {
+            for (Entity word : gp.words[gp.currentMap]) {
                 if (word != null) {
                     int x = word.worldX / gp.tileSize;
                     int y = word.worldY / gp.tileSize;
@@ -93,7 +93,7 @@ public record LogicHandler(GamePanel gp) {
             Arrays.fill(rowWords, "");
 
             // Loop over all pre-existing words
-            for (Entity word : gp.words[0]) {
+            for (Entity word : gp.words[gp.currentMap]) {
                 if (word != null) {
                     int x = word.worldX / gp.tileSize;
                     int y = word.worldY / gp.tileSize;
@@ -155,8 +155,8 @@ public record LogicHandler(GamePanel gp) {
      * @param property The property the object will be receiving
      */
     private void applyPropertyRule(String objectName, Entity.Property property) {
-        addProperty(gp.obj[0], objectName, property);
-        addProperty(gp.chr[0], objectName, property);
+        addProperty(gp.obj[gp.currentMap], objectName, property);
+        addProperty(gp.chr[gp.currentMap], objectName, property);
     }
 
     /**
@@ -187,8 +187,8 @@ public record LogicHandler(GamePanel gp) {
      * @param newEntityName The name of the new entity that will be created
      */
     private void applyTransformationRule(String oldEntityName, String newEntityName) {
-       transformEntity(gp.obj[0], oldEntityName, newEntityName);
-       transformEntity(gp.chr[0], oldEntityName, newEntityName);
+       transformEntity(gp.obj[gp.currentMap], oldEntityName, newEntityName);
+       transformEntity(gp.chr[gp.currentMap], oldEntityName, newEntityName);
     }
 
     /**

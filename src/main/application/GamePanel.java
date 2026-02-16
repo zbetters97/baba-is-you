@@ -39,8 +39,9 @@ public class GamePanel extends JPanel implements Runnable {
     public int maxWorldRow = 18;
 
     /* MAPS */
-    public final String[] mapFiles = {"map_lvl_1.txt"};
+    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt"};
     public final int maxMap = mapFiles.length;
+    public int currentMap = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -60,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final EntityGenerator eGenerator = new EntityGenerator(this);
 
     /* ENTITIES */
-    public Entity[][] chr = new Entity[maxWorldRow][50];
+    public Entity[][] chr = new Entity[maxMap][50];
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
@@ -92,11 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
 
-        tileM.loadMap();
-        aSetter.setup();
-        lHandler.checkRules();
-
-       // player.setDefaultValues();
+        setupLevel();
 
         if (fullScreenOn) {
             setFullScreen();
@@ -176,14 +173,20 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        updateEntities(obj[0]);
-        updateEntities(chr[0]);
-        updateEntities(words[0]);
+        updateEntities(chr[currentMap]);
+        updateEntities(obj[currentMap]);
+        updateEntities(words[currentMap]);
 
         // Checks rules once per update if turned on by an entity
         if (rulesCheck) {
             lHandler.checkRules();
             rulesCheck = false;
+        }
+
+        if (win && (currentMap + 1 < maxMap)) {
+            win = false;
+            currentMap++;
+            setupLevel();
         }
     }
     private void updateEntities(Entity[] entities) {
@@ -207,9 +210,9 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawToTempScreen() {
         clearBackBuffer();
         tileM.draw(g2);
-        drawObjects();
-        drawWords();
-        drawCharacters();
+        drawEntities(obj[currentMap]);
+        drawEntities(chr[currentMap]);
+        drawEntities(words[currentMap]);
         ui.draw(g2);
     }
 
@@ -223,25 +226,10 @@ public class GamePanel extends JPanel implements Runnable {
         g2.fillRect(0, 0, screenWidth, screenHeight);
     }
 
-    /** DRAW METHODS **/
-    private void drawObjects() {
-        for (Entity o : obj[0]) {
-            if (o != null) {
-                o.draw(g2);
-            }
-        }
-    }
-    private void drawWords() {
-        for (Entity w : words[0]) {
-            if (w != null) {
-                w.draw(g2);
-            }
-        }
-    }
-    private void drawCharacters() {
-        for (Entity c : chr[0]) {
-            if (c != null) {
-                c.draw(g2);
+    private void drawEntities(Entity[] entities) {
+        for (Entity e : entities) {
+            if (e != null) {
+                e.draw(g2);
             }
         }
     }
@@ -262,7 +250,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Resets the current level to starting position
      * Called by KeyHandler
      */
-    public void resetLevel() {
+    public void setupLevel() {
         tileM.loadMap();
         aSetter.setup();
         lHandler.checkRules();

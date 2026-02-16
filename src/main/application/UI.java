@@ -37,21 +37,7 @@ public class UI {
      * called by draw()
      */
     private void drawHUD() {
-
-        if (gp.win) {
-            drawWin();
-        }
         drawDebug();
-    }
-
-    private void drawWin() {
-        g2.setColor(Color.ORANGE);
-        g2.setFont(new Font("Arial", Font.BOLD, 60));
-
-        int x = getXForCenteredText("WINNER");
-        int y = gp.screenHeight / 2;
-
-        g2.drawString("WINNER!", x - gp.tileSize, y);
     }
 
     /**
@@ -61,7 +47,7 @@ public class UI {
      */
     private void drawDebug() {
 
-        if (gp.chr[0][0] == null) return;
+        if (gp.chr[gp.currentMap][0] == null) return;
 
         int x = 10;
         int y = gp.tileSize * 6;
@@ -71,15 +57,18 @@ public class UI {
         g2.setFont(new Font("Arial", Font.PLAIN, 20));
 
         // Draw coordinates
-        g2.drawString("WorldX: " + gp.chr[0][0].worldX, x, y);
+        g2.drawString("Level: " + (gp.currentMap + 1), x, y);
         y += lineHeight;
-        g2.drawString("WorldY: " + gp.chr[0][0].worldY, x, y);
+        g2.drawString("WorldX: " + gp.chr[gp.currentMap][0].worldX, x, y);
         y += lineHeight;
-        g2.drawString("Column: " + (gp.chr[0][0].worldX + gp.chr[0][0].hitbox.x) / gp.tileSize, x, y);
+        g2.drawString("WorldY: " + gp.chr[gp.currentMap][0].worldY, x, y);
         y += lineHeight;
-        g2.drawString("Row: " + (gp.chr[0][0].worldY + gp.chr[0][0].hitbox.y) / gp.tileSize, x, y);
+        g2.drawString("Column: " + (gp.chr[gp.currentMap][0].worldX + gp.chr[gp.currentMap][0].hitbox.x) / gp.tileSize, x, y);
+        y += lineHeight;
+        g2.drawString("Row: " + (gp.chr[gp.currentMap][0].worldY + gp.chr[gp.currentMap][0].hitbox.y) / gp.tileSize, x, y);
     }
 
+    /*
     private int getXForCenteredText(String text) {
         try {
             int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
@@ -89,4 +78,5 @@ public class UI {
             return gp.screenWidth / 2;
         }
     }
+    */
 }
