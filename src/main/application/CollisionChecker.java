@@ -37,10 +37,14 @@ public record CollisionChecker(GamePanel gp) {
                 if (entity.hitbox.intersects(targets[0][i].hitbox)) {
                     if (targets[0][i] != entity) {
                         index = i;
-                        if (targets[0][i].properties.contains(Entity.Property.STOP)) {
+                        if (targets[0][i].properties.contains(Entity.Property.STOP) || targets[0][i].collisionOn) {
                             entity.collisionOn = true;
                         }
                     }
+                }
+
+                if (isOutOfBounds(entity)) {
+                    entity.collisionOn = true;
                 }
 
                 // Reset entity solid area
@@ -54,5 +58,16 @@ public record CollisionChecker(GamePanel gp) {
         }
 
         return index;
+    }
+
+    /**
+     * IS OUT-OF-BOUNDS
+     * Checks if the given entity's hitbox is out of world boundary
+     * @param entity Entity to check collision on
+     * @return True if entity is out of bounds
+     */
+    private boolean isOutOfBounds(Entity entity) {
+        return entity.hitbox.x < 0 || entity.hitbox.x > gp.screenWidth - gp.tileSize ||
+                entity.hitbox.y < 0 || entity.hitbox.y > gp.screenHeight - gp.tileSize;
     }
 }

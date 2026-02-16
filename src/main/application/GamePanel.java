@@ -31,8 +31,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int tileSize = originalTileSize * scale; // scaled tile (16*3 = 48px)
     public final int maxScreenCol = 33; // columns (width)
     public final int maxScreenRow = 18; // rows (height)
-    public final int screenWidth = tileSize * maxScreenCol; // screen width (in tiles) 792px
-    public final int screenHeight = tileSize * maxScreenRow;
+    public final int screenWidth = tileSize * maxScreenCol; // screen width (33 x 48: 1584px)
+    public final int screenHeight = tileSize * maxScreenRow; // screen height (18 x 48: 864px)
 
     /* WORLD SIZE */
     public int maxWorldCol = 33;
