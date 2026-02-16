@@ -13,7 +13,6 @@ public class CHR_Baba extends Entity {
         super(gp);
 
         name = chrName;
-        baseName = name;
 
         direction = RIGHT;
 

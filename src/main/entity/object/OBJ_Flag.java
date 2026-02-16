@@ -16,7 +16,6 @@ public class OBJ_Flag extends Entity {
         worldY = y * gp.tileSize;
 
         name = objName;
-        baseName = name;
 
         up1 = down1 = left1 = right1 = setupImage("/objects/obj_flag");
     }

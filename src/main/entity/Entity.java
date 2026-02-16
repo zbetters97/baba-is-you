@@ -29,7 +29,7 @@ public class Entity {
 
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
-    public String name, baseName;
+    public String name;
 
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = DOWN;
@@ -125,7 +125,7 @@ public class Entity {
             spriteNum = 1;
             spriteCounter = 0;
             collisionOn = true;
-            gp.lHandler.checkRules();
+            gp.rulesCheck = true;
         }
     }
 
@@ -181,6 +181,7 @@ public class Entity {
      */
     private void checkCollision() {
         collisionOn = false;
+
         gp.cChecker.checkEntity(this, gp.obj);
         gp.cChecker.checkEntity(this, gp.words);
 
@@ -292,6 +293,8 @@ public class Entity {
     public void setForm(String newFormName) {
         Entity newForm = gp.eGenerator.getEntity(newFormName);
         if (newForm == null) return;
+
+        collisionOn = false;
 
         // Copy all attributes from new form
         this.name = newForm.name;

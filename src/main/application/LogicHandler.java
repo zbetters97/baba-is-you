@@ -172,7 +172,7 @@ public record LogicHandler(GamePanel gp) {
         for (Entity e : entityList) {
 
             // If entity's name (current or base form) matches passed name, provide property
-            if (e != null && (e.baseName.equals(entityName) || e.name.equals(entityName))) {
+            if (e != null && (e.name.equals(entityName))) {
                 e.properties.add(property);
             }
         }

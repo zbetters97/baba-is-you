@@ -64,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
+    public boolean rulesCheck = false;
     public boolean win = false;
 
     /**
@@ -178,6 +179,11 @@ public class GamePanel extends JPanel implements Runnable {
         updateCharacters();
         updateObjects();
         updateWords();
+
+        if (rulesCheck) {
+            lHandler.checkRules();
+            rulesCheck = false;
+        }
     }
 
     /** UPDATE METHODS **/
