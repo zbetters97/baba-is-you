@@ -21,7 +21,7 @@ public class UI {
      * DRAW
      * Draws the UI
      * Called by GamePanel
-     * @param g2 Graphics2D enginge
+     * @param g2 Graphics2D engine
      */
     public void draw(Graphics2D g2) {
 
@@ -33,7 +33,7 @@ public class UI {
 
     /**
      * DRAW HUD
-     * Draws the HUD during playstate
+     * Draws the HUD during play state
      * called by draw()
      */
     private void drawHUD() {
@@ -48,7 +48,7 @@ public class UI {
         g2.setColor(Color.ORANGE);
         g2.setFont(new Font("Arial", Font.BOLD, 60));
 
-        int x = getXforCenteredText("WINNER");
+        int x = getXForCenteredText("WINNER");
         int y = gp.screenHeight / 2;
 
         g2.drawString("WINNER!", x - gp.tileSize, y);
@@ -60,6 +60,8 @@ public class UI {
      * Called by drawHUD()
      */
     private void drawDebug() {
+
+        if (gp.chr[0][0] == null) return;
 
         int x = 10;
         int y = gp.tileSize * 6;
@@ -78,7 +80,7 @@ public class UI {
         g2.drawString("Row: " + (gp.chr[0][0].worldY + gp.chr[0][0].hitbox.y) / gp.tileSize, x, y);
     }
 
-    private int getXforCenteredText(String text) {
+    private int getXForCenteredText(String text) {
         try {
             int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
             return (gp.screenWidth / 2) - (length / 2);

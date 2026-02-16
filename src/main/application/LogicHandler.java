@@ -12,7 +12,8 @@ public record LogicHandler(GamePanel gp) {
             "WIN", Entity.Property.WIN,
             "STOP", Entity.Property.STOP,
             "PUSH", Entity.Property.PUSH,
-            "YOU", Entity.Property.YOU
+            "YOU", Entity.Property.YOU,
+            "SINK", Entity.Property.SINK
     );
 
     /**

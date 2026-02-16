@@ -1,8 +1,8 @@
 package application;
 
 import entity.character.CHR_Baba;
-import entity.object.OBJ_Flag;
 import entity.object.OBJ_Wall;
+import entity.object.OBJ_Water;
 import entity.word.*;
 
 public record AssetSetter(GamePanel gp) {
@@ -26,7 +26,7 @@ public record AssetSetter(GamePanel gp) {
 
         i = setWalls(mapNum, i);
 
-        gp.obj[mapNum][i] = new OBJ_Flag(gp, 19, 8);
+        gp.obj[mapNum][i] = new OBJ_Water(gp, 19, 8);
     }
 
     private int setWalls(int mapNum, int i) {
@@ -57,11 +57,11 @@ public record AssetSetter(GamePanel gp) {
         int mapNum = 0;
         int i = 0;
 
-        gp.words[mapNum][i] = new WORD_Flag(gp, 14, 4);
+        gp.words[mapNum][i] = new WORD_Water(gp, 14, 4);
         i++;
-        gp.words[mapNum][i] = new WORD_Is(gp, 15, 3);
+        gp.words[mapNum][i] = new WORD_Is(gp, 15, 4);
         i++;
-        gp.words[mapNum][i] = new WORD_Win(gp, 16, 4);
+        gp.words[mapNum][i] = new WORD_Sink(gp, 16, 4);
         i++;
 
         gp.words[mapNum][i] = new WORD_Wall(gp, 15, 7);

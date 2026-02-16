@@ -20,6 +20,7 @@ public class Entity {
         STOP,
         PUSH,
         YOU,
+        SINK,
     }
 
     // Empty enum list to hold properties
@@ -30,6 +31,7 @@ public class Entity {
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
     public String name;
+    public boolean alive = true;
 
     /* MOVEMENT VALUES */
     public GamePanel.Direction direction = DOWN;
@@ -42,7 +44,6 @@ public class Entity {
     /* COLLISION VALUES */
     public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
     public boolean collisionOn = false;
-    protected boolean canMove = true;
 
     /* SPRITE ATTRIBUTES */
     protected BufferedImage image, up1, up2, down1, down2, left1, left2, right1, right2;
@@ -93,39 +94,47 @@ public class Entity {
      */
     public void update() {
         if (moving) {
-            moving();
+            moveATile();
         } else if (properties.contains(Entity.Property.YOU)) {
             handleMovementInput();
         }
     }
 
     /**
-     * MOVING
-     * Moves the entity one tile over if able
+     * MOVE A TILE
+     * Moves the entity one tile if able
+     * Called by update() if the entity is moving
      */
-    private void moving() {
-        if (canMove) {
-            switch (direction) {
-                case UP -> worldY -= speed;
-                case DOWN -> worldY += speed;
-                case LEFT -> worldX -= speed;
-                case RIGHT-> worldX += speed;
-            }
+    private void moveATile() {
+        switch (direction) {
+            case UP -> worldY -= speed;
+            case DOWN -> worldY += speed;
+            case LEFT -> worldX -= speed;
+            case RIGHT-> worldX += speed;
+        }
 
-            if (name.equals(CHR_Baba.chrName)) {
-                cycleSprites();
-            }
+        if (name.equals(CHR_Baba.chrName)) {
+            cycleSprites();
         }
 
         pixelCounter += speed;
         if (pixelCounter >= gp.tileSize) {
-            moving = false;
-            pixelCounter = 0;
-            spriteNum = 1;
-            spriteCounter = 0;
-            collisionOn = false;
-            gp.rulesCheck = true;
+            resetMovement();
         }
+    }
+
+    /**
+     * RESET MOVEMENT
+     * Resets all values when the entity is done moving
+     * Called by moving()
+     */
+    private void resetMovement() {
+        moving = false;
+        pixelCounter = 0;
+        spriteNum = 1;
+        spriteCounter = 0;
+        collisionOn = false;
+        gp.rulesCheck = true;
     }
 
     /**
@@ -136,9 +145,6 @@ public class Entity {
     private void handleMovementInput() {
         if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
             updateDirection();
-        }
-        else {
-            moving = false;
         }
     }
 
@@ -187,49 +193,18 @@ public class Entity {
         // If self has WIN property, player wins
         checkWin(this);
 
-        checkCharacters();
-        checkObjects();
-        checkWords();
+        checkEntities(gp.obj);
+        checkEntities(gp.chr);
+        checkEntities(gp.words);
     }
 
-    /**
-     * CHECK CHARACTERS
-     * Checks if the entity will interact with a character
-     */
-    private void checkCharacters() {
-        int chr = gp.cChecker.checkEntity(this, gp.chr);
+    private void checkEntities(Entity[][] entities) {
+        int ent = gp.cChecker.checkEntity(this, entities);
 
-        // If self has WIN property, player wins
-        checkWin(this);
-
-        if (chr != -1) {
-            checkPush(gp.obj[0][chr]);
-            checkWin(gp.chr[0][chr]);
-        }
-    }
-
-    /**
-     * CHECK OBJECTS
-     * Checks if the entity will interact with an object
-     */
-    private void checkObjects() {
-        int obj = gp.cChecker.checkEntity(this, gp.obj);
-
-        if (obj != -1) {
-            checkPush(gp.obj[0][obj]);
-            checkWin(gp.obj[0][obj]);
-        }
-    }
-
-    /**
-     * CHECK WORDS
-     * Checks if the entity will interact with a word
-     */
-    private void checkWords() {
-        int word = gp.cChecker.checkEntity(this, gp.words);
-
-        if (word != -1) {
-            checkPush(gp.words[0][word]);
+        if (ent != -1) {
+            checkSink(entities[0][ent]);
+            checkPush(entities[0][ent]);
+            checkWin(entities[0][ent]);
         }
     }
 
@@ -240,6 +215,17 @@ public class Entity {
     private void checkPush(Entity obj) {
         if (obj.properties.contains(Property.PUSH) && !obj.properties.contains(Property.STOP)) {
             obj.move(direction);
+        }
+    }
+
+    /**
+     * CHECK SINK
+     * Sets alive to false if the object has SINK
+     */
+    private void checkSink(Entity obj) {
+        if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
+            alive = false;
+            obj.alive = false;
         }
     }
 

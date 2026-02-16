@@ -176,35 +176,25 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        updateCharacters();
-        updateObjects();
-        updateWords();
+        updateEntities(obj[0]);
+        updateEntities(chr[0]);
+        updateEntities(words[0]);
 
+        // Checks rules once per update if turned on by an entity
         if (rulesCheck) {
             lHandler.checkRules();
             rulesCheck = false;
         }
     }
-
-    /** UPDATE METHODS **/
-    private void updateCharacters() {
-        for (int i = 0; i < chr[0].length; i++) {
-            if (chr[0][i] != null) {
-                chr[0][i].update();
-            }
-        }
-    }
-    private void updateObjects() {
-        for (int i = 0; i < obj[0].length; i++) {
-            if (obj[0][i] != null) {
-                obj[0][i].update();
-            }
-        }
-    }
-    private void updateWords() {
-        for (int i = 0; i < words[0].length; i++) {
-            if (words[0][i] != null) {
-                words[0][i].update();
+    private void updateEntities(Entity[] entities) {
+        for (int i = 0; i < entities.length; i++) {
+            if (entities[i] != null) {
+                if (entities[i].alive) {
+                    entities[i].update();
+                }
+                else {
+                    entities[i] = null;
+                }
             }
         }
     }
@@ -267,6 +257,11 @@ public class GamePanel extends JPanel implements Runnable {
         g.dispose();
     }
 
+    /**
+     * RESET LEVEL
+     * Resets the current level to starting position
+     * Called by KeyHandler
+     */
     public void resetLevel() {
         tileM.loadMap();
         aSetter.setup();
