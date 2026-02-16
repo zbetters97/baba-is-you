@@ -92,7 +92,6 @@ public class Entity {
      * Called every frame by GamePanel
      */
     public void update() {
-
         if (moving) {
             moving();
         } else if (properties.contains(Entity.Property.YOU)) {
@@ -124,7 +123,7 @@ public class Entity {
             pixelCounter = 0;
             spriteNum = 1;
             spriteCounter = 0;
-            collisionOn = true;
+            collisionOn = false;
             gp.rulesCheck = true;
         }
     }
