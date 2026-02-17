@@ -24,3 +24,5 @@ true
 true
 012.png
 true
+013.png
+true
