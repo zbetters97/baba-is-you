@@ -2,28 +2,26 @@ package application;
 
 import entity.Entity;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public record CollisionChecker(GamePanel gp) {
 
+    /**
+     * GET ENTITIES AT NEXT TILE
+     * @param entity Entity that is moving to the tile
+     * @param dir Direction the entity is moving
+     * @return List of entities found at tile
+     */
     public List<Entity> getEntitiesAtNextTile(Entity entity, GamePanel.Direction dir) {
-        int nextX = entity.worldX;
-        int nextY = entity.worldY;
-
-        // Find next X/Y using direction
-        switch (dir) {
-            case UP -> nextY -= gp.tileSize;
-            case DOWN -> nextY += gp.tileSize;
-            case LEFT -> nextX -= gp.tileSize;
-            case RIGHT -> nextX += gp.tileSize;
-        }
+        Point next = getNextTilePosition(entity, dir);
 
         // Get all entities at the next tile
         List<Entity> result = new ArrayList<>();
         for (Entity[] group : new Entity[][] { gp.words[gp.currentMap], gp.chr[gp.currentMap], gp.obj[gp.currentMap]}) {
             for (Entity ent : group) {
-                if (ent != null && ent.worldX == nextX && ent.worldY == nextY) {
+                if (ent != null && ent.worldX == next.x && ent.worldY == next.y) {
                     result.add(ent);
                 }
             }
@@ -32,29 +30,51 @@ public record CollisionChecker(GamePanel gp) {
         return result;
     }
 
+    /**
+     * TILE BLOCKED
+     * @param entity The entity that is moving a tile
+     * @param dir The direction the entity is moving
+     * @return True if tile with collision is on next tile
+     */
     public boolean tileBlocked(Entity entity, GamePanel.Direction dir) {
-        int nextX = entity.worldX;
-        int nextY = entity.worldY;
 
-        // Find next tile using direction and X/Y
-        switch (dir) {
-            case UP -> nextY -= gp.tileSize;
-            case DOWN -> nextY += gp.tileSize;
-            case LEFT -> nextX -= gp.tileSize;
-            case RIGHT -> nextX += gp.tileSize;
-        }
+        Point next = getNextTilePosition(entity, dir);
 
         // Tile out of bounds
-        if (gp.cChecker.isOutOfBounds(nextX, nextY)) {
+        if (gp.cChecker.isOutOfBounds(next.x, next.y)) {
             return true;
         }
 
+        int col = next.x / gp.tileSize;
+        int row = next.y / gp.tileSize;
+
         // Retrieve tile object at index
-        int tile = gp.tileM.mapTileNum[gp.currentMap][nextX / gp.tileSize][nextY / gp.tileSize];
+        int tile = gp.tileM.mapTileNum[gp.currentMap][col][row];
 
         // True if tile has collision
         return gp.tileM.tiles[tile].hasCollision;
     }
+
+    /**
+     * GET NEXT TILE POSITION
+     * Gets the X/Y the entity is moving towards
+     * @param entity The entity that is moving
+     * @param dir The direction the entity is moving
+     * @return The X/Y Point the entity will end on
+     */
+    private Point getNextTilePosition(Entity entity, GamePanel.Direction dir) {
+        int nextX = 0, nextY = 0;
+
+        switch (dir) {
+            case UP -> nextY = -gp.tileSize;
+            case DOWN -> nextY = gp.tileSize;
+            case LEFT -> nextX = -gp.tileSize;
+            case RIGHT -> nextX = gp.tileSize;
+        }
+
+        return new Point(entity.worldX + nextX, entity.worldY + nextY);
+    }
+
 
     /**
      * CHECK ENTITY
@@ -122,5 +142,4 @@ public record CollisionChecker(GamePanel gp) {
         return x < 0 || x > gp.screenWidth - gp.tileSize ||
                 y < 0 || y > gp.screenHeight - gp.tileSize;
     }
-
 }

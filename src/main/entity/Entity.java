@@ -165,18 +165,26 @@ public class Entity {
     /**
      * MOVE
      * Repositions the entity's X, Y based on direction and speed
-     * Called by updateDirection() if o collision
+     * Called by handleMovementInput()
      */
     private void move(GamePanel.Direction movingDirection) {
         if (!moving && !properties.contains(Property.STOP)) {
             direction = movingDirection;
 
             if (canMove(this, direction)) {
-                pushEntities(this, direction);
+                interactEntities(this, direction);
             }
         }
     }
 
+    /**
+     * CAN MOVE
+     * Checks if the entity is able to move a tile
+     * Called by move()
+     * @param entity Entity that wants to move
+     * @param dir The direction the entity is moving
+     * @return True if able to move, false if not
+     */
     private boolean canMove(Entity entity, GamePanel.Direction dir) {
         // Tile with collision in the way
         if (gp.cChecker.tileBlocked(entity, dir)) {
@@ -203,14 +211,21 @@ public class Entity {
         return true;
     }
 
-    private void pushEntities(Entity entity, GamePanel.Direction dir) {
+    /**
+     * INTERACT ENTITIES
+     * Sets moving to True for the entity passed
+     * Called by move() and self
+     * @param entity The entity that is getting interacted with
+     * @param dir The direction of the interaction
+     */
+    private void interactEntities(Entity entity, GamePanel.Direction dir) {
 
         // Get all entities at the next tile
         for (Entity ent : gp.cChecker.getEntitiesAtNextTile(entity, dir)) {
 
             // Entity is pushable
             if (ent.properties.contains(Property.PUSH)) {
-                pushEntities(ent, dir);
+                interactEntities(ent, dir);
             }
         }
 
@@ -221,6 +236,12 @@ public class Entity {
         checkRules(entity);
     }
 
+    /**
+     * CHECK RULES
+     * Checks various rules in play on each entity list
+     * Called by pushEntities()
+     * @param entity The entity to check rules on
+     */
     private void checkRules(Entity entity) {
         checkEntities(entity, gp.words);
         checkEntities(entity, gp.obj);
