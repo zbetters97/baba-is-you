@@ -12,7 +12,8 @@ public record AssetSetter(GamePanel gp) {
     public void setup() {
 
         if (gp.currentMap == 0) setupLevelOne();
-        else setupLevelTwo();
+        else if (gp.currentMap == 1) setupLevelTwo();
+        else setupLevelThree();
     }
 
     private void setupLevelOne() {
@@ -133,5 +134,34 @@ public record AssetSetter(GamePanel gp) {
         gp.words[mapNum][i] = new WORD_Is(gp, 20, 12);
         i++;
         gp.words[mapNum][i] = new WORD_Win(gp, 21, 12);
+    }
+
+    private void setupLevelThree() {
+        int mapNum = 2;
+        int i = 0;
+
+        gp.chr[mapNum][i] = new CHR_Baba(gp, 10, 8);
+
+        gp.obj[mapNum][i] = new OBJ_Flag(gp, 20, 8);
+
+        gp.words[mapNum][i] = new WORD_Baba(gp, 13, 6);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 14, 6);
+        i++;
+        gp.words[mapNum][i] = new WORD_You(gp, 15, 6);
+        i++;
+
+        gp.words[mapNum][i] = new WORD_Flag(gp, 13, 9);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 14, 9);
+        i++;
+        gp.words[mapNum][i] = new WORD_Win(gp, 15, 9);
+        i++;
+
+        gp.words[mapNum][i] = new WORD_Wall(gp, 23, 7);
+        i++;
+        gp.words[mapNum][i] = new WORD_Is(gp, 23, 8);
+        i++;
+        gp.words[mapNum][i] = new WORD_Stop(gp, 23, 9);
     }
 }

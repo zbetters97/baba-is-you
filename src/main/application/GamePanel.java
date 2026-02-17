@@ -39,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int maxWorldRow = 18;
 
     /* MAPS */
-    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt"};
+    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt"};
     public final int maxMap = mapFiles.length;
     public int currentMap = 0;
 
