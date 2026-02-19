@@ -71,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* GENERAL VALUES */
     public boolean showGrid = true;
     public boolean canSave = false;
+    public boolean canLoad = false;
     public boolean rulesCheck = false;
     public boolean win = false;
 
@@ -264,9 +265,10 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by update()
      */
     private void checkLoad() {
-        if (keyH.bPressed) {
-            keyH.bPressed = false;
 
+        // Can only call redo when canLoad is TRUE (not moving)
+        if (keyH.bPressed && canLoad) {
+            keyH.bPressed = false;
             dataHandler.loadState();
             lHandler.checkRules();
         }

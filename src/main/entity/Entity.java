@@ -136,6 +136,7 @@ public class Entity {
         spriteCounter = 0;
         collisionOn = false;
         gp.rulesCheck = true;
+        gp.canLoad = true;
     }
 
     /**
@@ -145,7 +146,13 @@ public class Entity {
      */
     private void handleMovementInput() {
         if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
+
+            // Save current state before movement
             gp.canSave = true;
+
+            // Can't call redo while moving
+            gp.canLoad = false;
+
             updateFacing();
             move(direction);
         }
@@ -272,6 +279,7 @@ public class Entity {
         if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
             entity.alive = false;
             obj.alive = false;
+            obj.resetMovement();
         }
     }
 
