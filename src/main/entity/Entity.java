@@ -145,6 +145,7 @@ public class Entity {
      */
     private void handleMovementInput() {
         if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
+            gp.canSave = true;
             updateFacing();
             move(direction);
         }

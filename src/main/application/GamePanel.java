@@ -1,11 +1,13 @@
 package application;
 
+import data.State;
 import entity.Entity;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -41,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 0;
+    public int currentMap = 1;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -65,6 +67,11 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
+    private final ArrayList<State[]> chrStateHistory = new ArrayList<>();
+    private final ArrayList<State[]> wordStateHistory = new ArrayList<>();
+    private final ArrayList<State[]> objStateHistory = new ArrayList<>();
+
+    public boolean canSave = false;
     public boolean rulesCheck = false;
     public boolean win = false;
 
@@ -173,21 +180,37 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
+        checkSave();
+        runUpdate();
+        checkRules();
+        checkWin();
+        checkLoad();
+    }
+
+    private void checkSave() {
+        if (canSave) {
+            canSave = false;
+
+            saveEntityStates(chrStateHistory, chr[currentMap]);
+            saveEntityStates(wordStateHistory, words[currentMap]);
+            saveEntityStates(objStateHistory, obj[currentMap]);
+        }
+    }
+    private void saveEntityStates(ArrayList<State[]> eStateHistory, Entity[] entities) {
+        State[] eStates = new State[50];
+        for (int i = 0; i < entities.length; i++) {
+            if (entities[i] != null) {
+                eStates[i] = new State(entities[i].worldX, entities[i].worldY, entities[i].direction);
+            }
+        }
+
+        eStateHistory.add(eStates);
+    }
+
+    private void runUpdate() {
         updateEntities(words[currentMap]);
         updateEntities(obj[currentMap]);
         updateEntities(chr[currentMap]);
-
-        // Checks rules once per update if turned on by an entity
-        if (rulesCheck) {
-            lHandler.checkRules();
-            rulesCheck = false;
-        }
-
-        if (win && (currentMap + 1 < maxMap)) {
-            win = false;
-            currentMap++;
-            setupLevel();
-        }
     }
     private void updateEntities(Entity[] entities) {
         for (int i = 0; i < entities.length; i++) {
@@ -200,6 +223,47 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
         }
+    }
+
+    private void checkRules() {
+        // Checks rules once per update if turned on by an entity
+        if (rulesCheck) {
+            lHandler.checkRules();
+            rulesCheck = false;
+        }
+    }
+    private void checkWin() {
+        if (win && (currentMap + 1 < maxMap)) {
+            win = false;
+            currentMap++;
+            setupLevel();
+        }
+    }
+
+    private void checkLoad() {
+        if (keyH.bPressed) {
+            keyH.bPressed = false;
+
+            loadEntityStates(chrStateHistory, chr[currentMap]);
+            loadEntityStates(wordStateHistory, words[currentMap]);
+            loadEntityStates(objStateHistory, obj[currentMap]);
+
+            lHandler.checkRules();
+        }
+    }
+    private void loadEntityStates(ArrayList<State[]> eStateHistory, Entity[] entities) {
+
+        if (eStateHistory.isEmpty()) return;
+
+        for (int i = 0; i < entities.length; i++) {
+            if (entities[i] != null) {
+                entities[i].worldX = eStateHistory.getLast()[i].point.x;
+                entities[i].worldY = eStateHistory.getLast()[i].point.y;
+                entities[i].direction = eStateHistory.getLast()[i].direction;
+            }
+        }
+
+        eStateHistory.removeLast();
     }
 
     /**
