@@ -1,5 +1,6 @@
-package application;
+package data;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.character.CHR_Baba;
 import entity.object.OBJ_Flag;
