@@ -23,7 +23,9 @@ public class SaveLoad {
         saveEntityStates(objStateHistory, gp.obj[gp.currentMap]);
     }
     private void saveEntityStates(ArrayList<State[]> eStateHistory, Entity[] entities) {
+
         State[] eStates = new State[50];
+
         for (int i = 0; i < entities.length; i++) {
             if (entities[i] != null) {
                 eStates[i] = new State(entities[i].name, entities[i].worldX, entities[i].worldY, entities[i].direction);
@@ -42,11 +44,23 @@ public class SaveLoad {
 
         if (eStateHistory.isEmpty()) return;
 
+        State[] last = eStateHistory.getLast();
+
         for (int i = 0; i < entities.length; i++) {
-            if (entities[i] != null) {
-                entities[i].worldX = eStateHistory.getLast()[i].point.x;
-                entities[i].worldY = eStateHistory.getLast()[i].point.y;
-                entities[i].direction = eStateHistory.getLast()[i].direction;
+
+            if (last[i] == null) {
+                entities[i] = null;
+            }
+            else {
+                if (entities[i] == null) {
+                    entities[i] = gp.eGenerator.getEntity(last[i].name);
+                }
+
+                if (entities[i] != null) {
+                    entities[i].worldX = eStateHistory.getLast()[i].point.x;
+                    entities[i].worldY = eStateHistory.getLast()[i].point.y;
+                    entities[i].direction = eStateHistory.getLast()[i].direction;
+                }
             }
         }
 

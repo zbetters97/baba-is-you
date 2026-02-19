@@ -67,16 +67,4 @@ public class UI {
         y += lineHeight;
         g2.drawString("Row: " + (gp.chr[gp.currentMap][0].worldY + gp.chr[gp.currentMap][0].hitbox.y) / gp.tileSize, x, y);
     }
-
-    /*
-    private int getXForCenteredText(String text) {
-        try {
-            int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-            return (gp.screenWidth / 2) - (length / 2);
-        }
-        catch (Exception e) {
-            return gp.screenWidth / 2;
-        }
-    }
-    */
 }

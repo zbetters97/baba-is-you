@@ -17,6 +17,7 @@ public class KeyHandler implements KeyListener {
     public final int btn_RIGHT = KeyEvent.VK_RIGHT;
     public final int btn_A = KeyEvent.VK_A;
     public final int btn_B = KeyEvent.VK_S;
+    public final int btn_Y = KeyEvent.VK_D;
 
     /* CONFIG VALUES */
     public boolean upPressed, downPressed, leftPressed, rightPressed, aPressed, bPressed;
@@ -65,6 +66,10 @@ public class KeyHandler implements KeyListener {
             bPressed = true;
             lock = false;
         }
+        if (code == btn_Y && lock) {
+            gp.showGrid = !gp.showGrid;
+            lock = false;
+        }
     }
 
     /**
@@ -94,6 +99,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == btn_B) {
             bPressed = false;
+            lock = true;
+        }
+        if (code == btn_Y) {
             lock = true;
         }
     }

@@ -68,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
+    public boolean showGrid = true;
     public boolean canSave = false;
     public boolean rulesCheck = false;
     public boolean win = false;

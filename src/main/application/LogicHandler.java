@@ -1,6 +1,7 @@
 package application;
 
 import entity.Entity;
+import entity.word.WORD_Is;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -131,7 +132,7 @@ public record LogicHandler(GamePanel gp) {
 
             // Does not equal a rule
             if (subject.isEmpty() || predicate.isEmpty()) continue;
-            if (!verb.equals("IS")) continue;
+            if (!verb.equals(WORD_Is.wordName)) continue;
 
             // Matching property to the predicate
             Entity.Property property = PROPERTY_MAP.get(predicate);
@@ -140,7 +141,7 @@ public record LogicHandler(GamePanel gp) {
                 continue;
             }
 
-            if (gp.eGenerator.getEntity(predicate) != null) {
+            if (gp.eGenerator.getTransformationEntity(predicate) != null) {
                 applyTransformationRule(subject, predicate);
             }
         }

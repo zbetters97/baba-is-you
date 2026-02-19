@@ -105,7 +105,7 @@ public class TileManager {
      * CREATE TILE
      * Assigns tile attributes to the tiles array
      * @param index Array index
-     * @param hasCollision True if has collision
+     * @param hasCollision True if tile has collision
      * @param tileNumber Tile number
      */
     private void createTile(int index, String tileNumber, boolean hasCollision) {
@@ -158,7 +158,9 @@ public class TileManager {
             }
         }
 
-        drawGrid(g2);
+        if (gp.showGrid) {
+            drawGrid(g2);
+        }
     }
 
     /**
