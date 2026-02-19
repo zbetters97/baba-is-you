@@ -21,6 +21,7 @@ public class Entity {
         STOP,
         PUSH,
         YOU,
+        DEFEAT,
         SINK,
     }
 
@@ -253,6 +254,7 @@ public class Entity {
     private void checkRules(Entity entity) {
         checkEntities(entity, gp.words);
         checkEntities(entity, gp.obj);
+        checkEntities(entity, gp.iTiles);
         checkEntities(entity, gp.chr);
         checkWin(entity, this);
     }
@@ -268,18 +270,34 @@ public class Entity {
         if (ent != -1) {
             checkSink(entity, entities[gp.currentMap][ent]);
             checkWin(entity, entities[gp.currentMap][ent]);
+            checkDefeat(entity, entities[gp.currentMap][ent]);
         }
     }
 
     /**
      * CHECK SINK
      * Sets alive to false if the object has SINK
+     * Called by checkEntities()
      */
     private void checkSink(Entity entity, Entity obj) {
         if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
             entity.alive = false;
+            entity.resetMovement();
+
             obj.alive = false;
             obj.resetMovement();
+        }
+    }
+
+    /**
+     * CHECK DEFEAT
+     * Sets alive to false if the object has DEFEAT
+     * Called by checkEntities(0
+     */
+    private void checkDefeat(Entity entity, Entity obj) {
+        if (obj.properties.contains(Property.DEFEAT) && !obj.properties.contains(Property.STOP)) {
+            entity.alive = false;
+            entity.resetMovement();
         }
     }
 

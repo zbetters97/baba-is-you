@@ -3,11 +3,11 @@ package entity.object;
 import application.GamePanel;
 import entity.Entity;
 
-public class OBJ_Rock extends Entity {
+public class OBJ_Skull extends Entity {
 
-    public static final String objName = "ROCK";
+    public static final String objName = "SKULL";
 
-    public OBJ_Rock(GamePanel gp, int x, int y) {
+    public OBJ_Skull(GamePanel gp, int x, int y) {
         super(gp);
 
         worldX = x * gp.tileSize;

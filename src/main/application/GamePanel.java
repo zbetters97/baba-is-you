@@ -41,9 +41,9 @@ public class GamePanel extends JPanel implements Runnable {
     public int maxWorldRow = 18;
 
     /* MAPS */
-    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt"};
+    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 0;
+    public int currentMap = 2;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -67,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] chr = new Entity[maxMap][50];
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
+    public Entity[][] iTiles = new Entity[maxMap][100];
 
     /* GENERAL VALUES */
     public boolean showGrid = true;
@@ -206,8 +207,10 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by update()
      */
     private void runUpdate() {
+
         updateEntities(words[currentMap]);
         updateEntities(obj[currentMap]);
+        updateEntities(iTiles[currentMap]);
         updateEntities(chr[currentMap]);
     }
 
@@ -284,8 +287,9 @@ public class GamePanel extends JPanel implements Runnable {
         tileM.draw(g2);
 
         drawEntities(obj[currentMap]);
-        drawEntities(chr[currentMap]);
+        drawEntities(iTiles[currentMap]);
         drawEntities(words[currentMap]);
+        drawEntities(chr[currentMap]);
 
         ui.draw(g2);
     }

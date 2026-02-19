@@ -19,7 +19,7 @@ public record CollisionChecker(GamePanel gp) {
 
         // Get all entities at the next tile
         List<Entity> result = new ArrayList<>();
-        for (Entity[] group : new Entity[][] { gp.words[gp.currentMap], gp.chr[gp.currentMap], gp.obj[gp.currentMap]}) {
+        for (Entity[] group : new Entity[][] { gp.words[gp.currentMap], gp.obj[gp.currentMap], gp.iTiles[gp.currentMap], gp.chr[gp.currentMap]}) {
             for (Entity ent : group) {
                 if (ent != null && ent.worldX == next.x && ent.worldY == next.y) {
                     result.add(ent);

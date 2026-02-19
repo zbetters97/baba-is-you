@@ -14,7 +14,8 @@ public record LogicHandler(GamePanel gp) {
             "STOP", Entity.Property.STOP,
             "PUSH", Entity.Property.PUSH,
             "YOU", Entity.Property.YOU,
-            "SINK", Entity.Property.SINK
+            "SINK", Entity.Property.SINK,
+            "DEFEAT", Entity.Property.DEFEAT
     );
 
     /**
@@ -157,6 +158,7 @@ public record LogicHandler(GamePanel gp) {
      */
     private void applyPropertyRule(String objectName, Entity.Property property) {
         addProperty(gp.obj[gp.currentMap], objectName, property);
+        addProperty(gp.iTiles[gp.currentMap], objectName, property);
         addProperty(gp.chr[gp.currentMap], objectName, property);
     }
 
@@ -189,6 +191,7 @@ public record LogicHandler(GamePanel gp) {
      */
     private void applyTransformationRule(String oldEntityName, String newEntityName) {
        transformEntity(gp.obj[gp.currentMap], oldEntityName, newEntityName);
+        transformEntity(gp.iTiles[gp.currentMap], oldEntityName, newEntityName);
        transformEntity(gp.chr[gp.currentMap], oldEntityName, newEntityName);
     }
 

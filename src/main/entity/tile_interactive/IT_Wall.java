@@ -1,19 +1,18 @@
-package entity.object;
+package entity.tile_interactive;
 
 import application.GamePanel;
-import entity.Entity;
+import tile.InteractiveTile;
 
-public class OBJ_Wall extends Entity {
+public class IT_Wall extends InteractiveTile {
+    public static final String iName = "WALL";
 
-    public static final String objName = "WALL";
-
-    public OBJ_Wall(GamePanel gp, int x, int y, int ori, int side) {
+    public IT_Wall(GamePanel gp, int x, int y, int ori, int side) {
         super(gp);
 
         worldX = x * gp.tileSize;
         worldY = y * gp.tileSize;
 
-        name = objName;
+        name = iName;
 
         String orientation;
         if (ori == 0) orientation = "hor";
@@ -31,6 +30,6 @@ public class OBJ_Wall extends Entity {
         else if (side == 7) facing = "left-up";
         else facing = "right-up";
 
-        up1 = down1 = left1 = right1 = setupImage("/objects/obj_wall_" + orientation + "_" + facing);
+        up1 = down1 = left1 = right1 = setupImage("/interactive_tiles/it_" + iName.toLowerCase() + "_" + orientation + "_" + facing);
     }
 }

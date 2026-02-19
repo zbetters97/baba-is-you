@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../legend-of-zelda" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../loz-links-reawakening" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../pokemon-lets-battle" vcs="Git" />
   </component>
 </project>

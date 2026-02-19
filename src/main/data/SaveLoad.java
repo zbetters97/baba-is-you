@@ -32,9 +32,10 @@ public class SaveLoad {
     public void saveState() {
         State[] wordStateStack = saveEntityStates(gp.words[gp.currentMap]);
         State[] objStateStack = saveEntityStates(gp.obj[gp.currentMap]);
+        State[] itStateStack = saveEntityStates(gp.iTiles[gp.currentMap]);
         State[] chrStateStack = saveEntityStates(gp.chr[gp.currentMap]);
 
-        undoStack.push(new UndoFrame(wordStateStack, objStateStack, chrStateStack));
+        undoStack.push(new UndoFrame(wordStateStack, objStateStack, itStateStack, chrStateStack));
 
         while (undoStack.size() > MAX_UNDO) {
             undoStack.removeLast();
@@ -86,6 +87,7 @@ public class SaveLoad {
 
         loadEntityStates(frame.words(), gp.words[gp.currentMap]);
         loadEntityStates(frame.obj(), gp.obj[gp.currentMap]);
+        loadEntityStates(frame.iTiles(), gp.iTiles[gp.currentMap]);
         loadEntityStates(frame.chr(), gp.chr[gp.currentMap]);
     }
 
