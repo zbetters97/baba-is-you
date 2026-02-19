@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 1;
+    public int currentMap = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -68,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] obj = new Entity[maxMap][50];
     public Entity[][] words = new Entity[maxMap][50];
 
+    /* GENERAL VALUES */
     public boolean showGrid = true;
     public boolean canSave = false;
     public boolean rulesCheck = false;
@@ -185,6 +186,12 @@ public class GamePanel extends JPanel implements Runnable {
         checkLoad();
     }
 
+    /**
+     * CHECK SAVE
+     * Calls dataHandler to save entity states if
+     *  canSave is TRUE
+     * Called by update()
+     */
     private void checkSave() {
         if (canSave) {
             canSave = false;
@@ -192,11 +199,24 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * RUN UPDATE
+     * Updates each entity state
+     * Called by update()
+     */
     private void runUpdate() {
         updateEntities(words[currentMap]);
         updateEntities(obj[currentMap]);
         updateEntities(chr[currentMap]);
     }
+
+    /**
+     * UPDATE ENTITIES
+     * Iterates over each entity in the given list and
+     *  updates if alive, sets to null if not
+     * Called by runUpdate()
+     * @param entities List of entities to update
+     */
     private void updateEntities(Entity[] entities) {
         for (int i = 0; i < entities.length; i++) {
             if (entities[i] != null) {
@@ -210,6 +230,11 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * CHECK RULES
+     * Calls lHandler to check rules if rulesCheck is TRUE
+     * Called by update()
+     */
     private void checkRules() {
         // Checks rules once per update if turned on by an entity
         if (rulesCheck) {
@@ -217,6 +242,13 @@ public class GamePanel extends JPanel implements Runnable {
             rulesCheck = false;
         }
     }
+
+    /**
+     * CHECK WIN
+     * Checks if win is set to TRUE and
+     *  sets up the next level
+     * Called by update()
+     */
     private void checkWin() {
         if (win && (currentMap + 1 < maxMap)) {
             win = false;
@@ -225,6 +257,12 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * CHECK LOAD
+     * Calls dataHandler to load entity states if
+     *  B pressed
+     * Called by update()
+     */
     private void checkLoad() {
         if (keyH.bPressed) {
             keyH.bPressed = false;
@@ -242,9 +280,11 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawToTempScreen() {
         clearBackBuffer();
         tileM.draw(g2);
+
         drawEntities(obj[currentMap]);
         drawEntities(chr[currentMap]);
         drawEntities(words[currentMap]);
+
         ui.draw(g2);
     }
 
@@ -258,6 +298,11 @@ public class GamePanel extends JPanel implements Runnable {
         g2.fillRect(0, 0, screenWidth, screenHeight);
     }
 
+    /**
+     * Iterates over each entity in the given list and
+     *  calls draw method
+     * @param entities List of entities to draw
+     */
     private void drawEntities(Entity[] entities) {
         for (Entity e : entities) {
             if (e != null) {
