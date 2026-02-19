@@ -41,6 +41,12 @@ public record LogicHandler(GamePanel gp) {
             }
         }
 
+        for (Entity i : gp.iTiles[gp.currentMap]) {
+            if (i != null) {
+                i.properties.clear();
+            }
+        }
+
         for (Entity c : gp.chr[gp.currentMap]) {
             if (c != null) {
                 c.properties.clear();

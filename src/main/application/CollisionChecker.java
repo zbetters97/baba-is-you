@@ -97,12 +97,14 @@ public record CollisionChecker(GamePanel gp) {
                 targets[gp.currentMap][i].hitbox.y = targets[gp.currentMap][i].worldY;
 
                 // Shift hitbox to find next tile based on direction
+                /*
                 switch (entity.direction) {
                     case UP -> entity.hitbox.y -= gp.tileSize;
                     case DOWN -> entity.hitbox.y += gp.tileSize;
                     case LEFT -> entity.hitbox.x -= gp.tileSize;
                     case RIGHT -> entity.hitbox.x += gp.tileSize;
                 }
+                */
 
                 // Entity and target collides
                 if (entity.hitbox.intersects(targets[gp.currentMap][i].hitbox)) {

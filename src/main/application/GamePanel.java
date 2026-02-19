@@ -8,6 +8,11 @@ import tile.TileManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static application.GamePanel.Direction.*;
+import static application.GamePanel.Direction.RIGHT;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -43,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 2;
+    public int currentMap = 3;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -71,7 +76,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     /* GENERAL VALUES */
     public boolean showGrid = true;
-    public boolean canSave = false;
     public boolean canLoad = false;
     public boolean rulesCheck = false;
     public boolean win = false;
@@ -181,24 +185,11 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        checkSave();
         runUpdate();
+        handleMovementInput();
         checkRules();
         checkWin();
         checkLoad();
-    }
-
-    /**
-     * CHECK SAVE
-     * Calls dataHandler to save entity states if
-     *  canSave is TRUE
-     * Called by update()
-     */
-    private void checkSave() {
-        if (canSave) {
-            canSave = false;
-            dataHandler.saveState();
-        }
     }
 
     /**
@@ -207,7 +198,6 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by update()
      */
     private void runUpdate() {
-
         updateEntities(words[currentMap]);
         updateEntities(obj[currentMap]);
         updateEntities(iTiles[currentMap]);
@@ -232,6 +222,77 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
         }
+    }
+
+    /**
+     * HANDLE MOVEMENT INPUT
+     */
+    private void handleMovementInput() {
+
+        // Entities currently moving, do nothing
+        if (!noEntitiesMoving()) {
+            return;
+        }
+
+        Direction directionPressed = getPressedDirection();
+        canLoad = true;
+
+        // Arrow pressed while no entity movement
+        if (directionPressed != null) {
+
+            dataHandler.saveState();
+            canLoad = false;
+
+            // Loop through each entity list
+            for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
+
+                // Set of entities to move
+                Set<Entity> moveSet = new LinkedHashSet<>();
+
+                // Loop through each entity
+                for (Entity e : group) {
+
+                    // Not found or doesn't contain YOU property
+                    if (e == null || !e.properties.contains(Entity.Property.YOU)) {
+                        continue;
+                    }
+
+                    // Entity unable to move
+                    if (e.cantMove(e, directionPressed, moveSet)) {
+                        continue;
+                    }
+
+                    moveSet.add(e);
+                }
+
+                // Start move for each entity that can move
+                for (Entity m : moveSet) {
+                    m.startMove(directionPressed);
+                }
+            }
+        }
+    }
+    private boolean noEntitiesMoving() {
+        for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
+            for (Entity e : group) {
+                if (e != null && e.moving) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    private Direction getPressedDirection() {
+
+        Direction direction = null;
+
+        if (keyH.upPressed) direction = UP;
+        else if (keyH.downPressed) direction = DOWN;
+        else if (keyH.leftPressed) direction = LEFT;
+        else if (keyH.rightPressed) direction = RIGHT;
+
+        return direction;
     }
 
     /**
