@@ -110,20 +110,36 @@ public class SaveLoad {
                 continue;
             }
 
+            boolean revived = false;
+
             // Has data but entity is already null, or entity changed since redo
             if (entities[i] == null || !entities[i].name.equals(saved[i].name)) {
+
                 // Resurrect entity using saved state
                 entities[i] = gp.eGenerator.getEntity(saved[i].name);
+                revived = true;
             }
 
             // Entity data found or successful resurrection
             if (entities[i] != null) {
 
                 // Assign values to entity
-                entities[i].worldX = saved[i].point.x;
-                entities[i].worldY = saved[i].point.y;
+                entities[i].previousWorldX = saved[i].point.x;
+                entities[i].previousWorldY = saved[i].point.y;
                 entities[i].direction = saved[i].direction;
+
+                if (revived) {
+                    entities[i].worldX = saved[i].point.x;
+                    entities[i].worldY = saved[i].point.y;
+                }
+                else if (entities[i].worldX != saved[i].point.x || entities[i].worldY != saved[i].point.y) {
+                    entities[i].reversing = true;
+                }
             }
         }
+    }
+
+    public void clearData() {
+        undoStack.clear();
     }
 }

@@ -15,6 +15,6 @@ public abstract class WordEntity extends Entity {
         collisionOn = false;
         properties.add(Property.PUSH);
 
-        up1 = down1 = left1 = right1 = setupImage("/words/word_" + name.toLowerCase());
+        up1 = down1 = left1 = right1 = setupImage("/words/" + name.toLowerCase());
     }
 }

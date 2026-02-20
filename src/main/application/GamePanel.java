@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 0;
+    public int currentMap = 1;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -239,11 +239,11 @@ public class GamePanel extends JPanel implements Runnable {
         // Can load if no movement
         canLoad = true;
 
-        // Get direction user pressed (null if none)
-        Direction directionPressed = getPressedDirection();
-
         // 3-frame buffer for tile movement
         cooldown++;
+
+        // Get direction user pressed (null if none)
+        Direction directionPressed = getPressedDirection();
 
         // Arrow pressed while no entity movement
         if (directionPressed != null && cooldown > 2) {
@@ -260,7 +260,7 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean noEntitiesMoving() {
         for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
             for (Entity e : group) {
-                if (e != null && e.moving) {
+                if (e != null && (e.moving || e.reversing)) {
                     return false;
                 }
             }
@@ -312,6 +312,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by update()
      */
     private void checkRules() {
+
         // Checks rules once per update if turned on by an entity
         if (rulesCheck) {
             lHandler.checkRules();
@@ -342,10 +343,9 @@ public class GamePanel extends JPanel implements Runnable {
     private void checkLoad() {
 
         // Can only call redo when canLoad is TRUE (not moving)
-        if (keyH.bPressed && canLoad) {
+        if (keyH.bPressed && canLoad && noEntitiesMoving()) {
             keyH.bPressed = false;
             dataHandler.loadState();
-            lHandler.checkRules();
         }
     }
 
@@ -406,6 +406,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by KeyHandler
      */
     public void setupLevel() {
+        dataHandler.clearData();
         tileM.loadMap();
         aSetter.setup();
         lHandler.checkRules();

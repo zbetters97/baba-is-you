@@ -1,7 +1,7 @@
 package application;
 
 import entity.Entity;
-import entity.word.WORD_Is;
+import entity.word.*;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,12 +10,12 @@ public record LogicHandler(GamePanel gp) {
 
     // Words mapped to a property
     private static final Map<String, Entity.Property> PROPERTY_MAP = Map.of(
-            "WIN", Entity.Property.WIN,
-            "STOP", Entity.Property.STOP,
-            "PUSH", Entity.Property.PUSH,
-            "YOU", Entity.Property.YOU,
-            "SINK", Entity.Property.SINK,
-            "DEFEAT", Entity.Property.DEFEAT
+            WORD_Win.wordName, Entity.Property.WIN,
+            WORD_Stop.wordName, Entity.Property.STOP,
+            WORD_Push.wordName, Entity.Property.PUSH,
+            WORD_You.wordName, Entity.Property.YOU,
+            WORD_Sink.wordName, Entity.Property.SINK,
+            WORD_Defeat.wordName, Entity.Property.DEFEAT
     );
 
     /**
@@ -129,7 +129,7 @@ public record LogicHandler(GamePanel gp) {
         for (int i = 0; i < words.length - 2; i++) {
 
             // Object receiving the property (ex: FLAG)
-            String subject = words[i];
+            String subject = words[i].replace("WORD_", "");
 
             // Linking verb (ex: IS)
             String verb = words[i + 1];
@@ -138,8 +138,9 @@ public record LogicHandler(GamePanel gp) {
             String predicate = words[i + 2];
 
             // Does not equal a rule
-            if (subject.isEmpty() || predicate.isEmpty()) continue;
-            if (!verb.equals(WORD_Is.wordName)) continue;
+            if (subject.isEmpty() || predicate.isEmpty() || !verb.equals(WORD_Is.wordName)) {
+                continue;
+            }
 
             // Matching property to the predicate
             Entity.Property property = PROPERTY_MAP.get(predicate);
@@ -149,7 +150,7 @@ public record LogicHandler(GamePanel gp) {
             }
 
             if (gp.eGenerator.getEntity(predicate) != null) {
-                applyTransformationRule(subject, predicate);
+                applyTransformationRule(subject, predicate.replace("WORD_", ""));
             }
         }
     }
@@ -196,9 +197,9 @@ public record LogicHandler(GamePanel gp) {
      * @param newEntityName The name of the new entity that will be created
      */
     private void applyTransformationRule(String oldEntityName, String newEntityName) {
-       transformEntity(gp.obj[gp.currentMap], oldEntityName, newEntityName);
+        transformEntity(gp.obj[gp.currentMap], oldEntityName, newEntityName);
         transformEntity(gp.iTiles[gp.currentMap], oldEntityName, newEntityName);
-       transformEntity(gp.chr[gp.currentMap], oldEntityName, newEntityName);
+        transformEntity(gp.chr[gp.currentMap], oldEntityName, newEntityName);
     }
 
     /**

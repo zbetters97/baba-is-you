@@ -33,6 +33,7 @@ public class Entity {
 
     /* GENERAL ATTRIBUTES */
     public int worldX, worldY;
+    public int previousWorldX, previousWorldY;
     public String name;
     public boolean alive = true;
 
@@ -40,6 +41,7 @@ public class Entity {
     public GamePanel.Direction direction = DOWN;
     public int speed = 4;
     public boolean moving = false;
+    public boolean reversing = false;
 
     /* ANIMATION VALUES */
     protected int pixelCounter = 0;
@@ -98,6 +100,8 @@ public class Entity {
     public void update() {
         if (moving) {
             moveATile();
+        } else if (reversing) {
+            moveBackwards();
         }
     }
 
@@ -125,6 +129,24 @@ public class Entity {
         }
     }
 
+    private void moveBackwards() {
+
+        if (previousWorldX > worldX) worldX += speed;
+        else if (previousWorldX < worldX) worldX -= speed;
+        else if (previousWorldY > worldY) worldY += speed;
+        else if (previousWorldY < worldY) worldY -= speed;
+
+        if (name.equals(CHR_Baba.chrName)) {
+            cycleSprites();
+        }
+
+        pixelCounter += speed;
+        if (pixelCounter >= gp.tileSize) {
+            resetMovement();
+            checkRules();
+        }
+    }
+
     /**
      * RESET MOVEMENT
      * Resets all values when the entity is done moving
@@ -132,6 +154,7 @@ public class Entity {
      */
     private void resetMovement() {
         moving = false;
+        reversing = false;
         pixelCounter = 0;
         spriteNum = 1;
         spriteCounter = 0;
@@ -216,7 +239,7 @@ public class Entity {
      * Called by checkEntities()
      */
     private void checkSink(Entity obj) {
-        if (properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
+        if (obj.properties.contains(Property.SINK) && !obj.properties.contains(Property.STOP)) {
             alive = false;
             resetMovement();
 
