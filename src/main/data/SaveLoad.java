@@ -110,8 +110,8 @@ public class SaveLoad {
                 continue;
             }
 
-            // Has data but entity is already null
-            if (entities[i] == null) {
+            // Has data but entity is already null, or entity changed since redo
+            if (entities[i] == null || !entities[i].name.equals(saved[i].name)) {
                 // Resurrect entity using saved state
                 entities[i] = gp.eGenerator.getEntity(saved[i].name);
             }

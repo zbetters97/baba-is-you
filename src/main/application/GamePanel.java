@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 3;
+    public int currentMap = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -243,33 +243,10 @@ public class GamePanel extends JPanel implements Runnable {
             dataHandler.saveState();
             canLoad = false;
 
-            // Loop through each entity list
-            for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
-
-                // Set of entities to move
-                Set<Entity> moveSet = new LinkedHashSet<>();
-
-                // Loop through each entity
-                for (Entity e : group) {
-
-                    // Not found or doesn't contain YOU property
-                    if (e == null || !e.properties.contains(Entity.Property.YOU)) {
-                        continue;
-                    }
-
-                    // Entity unable to move
-                    if (e.cantMove(e, directionPressed, moveSet)) {
-                        continue;
-                    }
-
-                    moveSet.add(e);
-                }
-
-                // Start move for each entity that can move
-                for (Entity m : moveSet) {
-                    m.startMove(directionPressed);
-                }
-            }
+            moveEntities(chr[currentMap], directionPressed);
+            moveEntities(obj[currentMap], directionPressed);
+            moveEntities(words[currentMap], directionPressed);
+            moveEntities(iTiles[currentMap], directionPressed);
         }
     }
     private boolean noEntitiesMoving() {
@@ -293,6 +270,32 @@ public class GamePanel extends JPanel implements Runnable {
         else if (keyH.rightPressed) direction = RIGHT;
 
         return direction;
+    }
+    private void moveEntities(Entity[] entities, Direction direction) {
+
+        // Set of entities to move
+        Set<Entity> moveSet = new LinkedHashSet<>();
+
+        // Loop through each entity
+        for (Entity e : entities) {
+
+            // Not found or doesn't contain YOU property
+            if (e == null || !e.properties.contains(Entity.Property.YOU)) {
+                continue;
+            }
+
+            // Entity unable to move
+            if (e.cantMove(e, direction, moveSet)) {
+                continue;
+            }
+
+            moveSet.add(e);
+        }
+
+        // Start move for each entity that can move
+        for (Entity m : moveSet) {
+            m.startMove(direction);
+        }
     }
 
     /**

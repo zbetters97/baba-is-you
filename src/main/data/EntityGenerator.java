@@ -10,12 +10,6 @@ import entity.word.*;
 
 public record EntityGenerator(GamePanel gp) {
 
-    public Entity getTransformationEntity(String eName) {
-        return getCharacter(eName) != null
-                ? getCharacter(eName)
-                : getObject(eName);
-    }
-
     public Entity getEntity(String eName) {
         return getCharacter(eName) != null
                 ? getCharacter(eName)

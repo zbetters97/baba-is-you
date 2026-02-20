@@ -148,7 +148,7 @@ public record LogicHandler(GamePanel gp) {
                 continue;
             }
 
-            if (gp.eGenerator.getTransformationEntity(predicate) != null) {
+            if (gp.eGenerator.getEntity(predicate) != null) {
                 applyTransformationRule(subject, predicate);
             }
         }
