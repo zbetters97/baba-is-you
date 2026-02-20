@@ -8,7 +8,6 @@ public abstract class WordEntity extends Entity {
         super(gp);
 
         this.name = name;
-
         worldX = col * gp.tileSize;
         worldY = row * gp.tileSize;
 

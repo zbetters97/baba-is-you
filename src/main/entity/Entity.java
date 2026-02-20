@@ -296,15 +296,16 @@ public class Entity {
         collisionOn = false;
 
         // Copy all attributes from new form
-        this.name = newForm.name;
-        this.up1 = newForm.up1;
-        this.up2 = newForm.up2;
-        this.down1 = newForm.down1;
-        this.down2 = newForm.down2;
-        this.left1 = newForm.left1;
-        this.left2 = newForm.left2;
-        this.right1 = newForm.right1;
-        this.right2 = newForm.right2;
+        name = newForm.name;
+        properties = newForm.properties;
+        up1 = newForm.up1;
+        up2 = newForm.up2;
+        down1 = newForm.down1;
+        down2 = newForm.down2;
+        left1 = newForm.left1;
+        left2 = newForm.left2;
+        right1 = newForm.right1;
+        right2 = newForm.right2;
     }
 
     /**

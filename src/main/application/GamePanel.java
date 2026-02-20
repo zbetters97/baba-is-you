@@ -328,7 +328,6 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void checkWin() {
         if (win && (currentMap + 1 < maxMap)) {
-            win = false;
             currentMap++;
             setupLevel();
         }
@@ -406,6 +405,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by KeyHandler
      */
     public void setupLevel() {
+        win = false;
         dataHandler.clearData();
         tileM.loadMap();
         aSetter.setup();
