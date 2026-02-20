@@ -80,6 +80,8 @@ public class GamePanel extends JPanel implements Runnable {
     public boolean rulesCheck = false;
     public boolean win = false;
 
+    private int cooldown = 0;
+
     /**
      * CONSTRUCTOR
      */
@@ -234,14 +236,20 @@ public class GamePanel extends JPanel implements Runnable {
             return;
         }
 
-        Direction directionPressed = getPressedDirection();
+        // Can load if no movement
         canLoad = true;
 
-        // Arrow pressed while no entity movement
-        if (directionPressed != null) {
+        // Get direction user pressed (null if none)
+        Direction directionPressed = getPressedDirection();
 
+        // 3-frame buffer for tile movement
+        cooldown++;
+
+        // Arrow pressed while no entity movement
+        if (directionPressed != null && cooldown > 2) {
             dataHandler.saveState();
             canLoad = false;
+            cooldown = 0;
 
             moveEntities(chr[currentMap], directionPressed);
             moveEntities(obj[currentMap], directionPressed);
