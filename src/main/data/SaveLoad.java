@@ -117,6 +117,7 @@ public class SaveLoad {
 
                 // Resurrect entity using saved state
                 entities[i] = gp.eGenerator.getEntity(saved[i].name);
+                entities[i].alive = true;
                 revived = true;
             }
 

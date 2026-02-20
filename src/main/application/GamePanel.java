@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 1;
+    public int currentMap = 3;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -342,7 +342,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void checkLoad() {
 
-        // Can only call redo when canLoad is TRUE (not moving)
+        // Can only call redo when canLoad is TRUE and no one moving
         if (keyH.bPressed && canLoad && noEntitiesMoving()) {
             keyH.bPressed = false;
             dataHandler.loadState();
