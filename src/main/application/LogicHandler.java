@@ -36,19 +36,12 @@ public record LogicHandler(GamePanel gp) {
      * Called by update();
      */
     private void clearProperties() {
-        for (Entity obj : gp.obj[gp.currentMap]) {
-            if (obj == null) continue;
-            obj.properties.clear();
-        }
+        for (Entity[] entities : gp.getAllRegularEntities()) {
+            for (Entity e : entities) {
+                if (e == null) continue;
 
-        for (Entity it : gp.iTiles[gp.currentMap]) {
-            if (it == null) continue;
-            it.properties.clear();
-        }
-
-        for (Entity chr : gp.chr[gp.currentMap]) {
-            if (chr == null) continue;
-            chr.properties.clear();
+                e.properties.clear();
+            }
         }
     }
 
@@ -147,8 +140,9 @@ public record LogicHandler(GamePanel gp) {
                 continue;
             }
 
-            if (gp.eGenerator.getEntity(predicate) != null) {
-                applyTransformationRule(subject, predicate.replace("WORD_", ""));
+            Entity newForm = gp.eGenerator.getEntity(predicate.replace("WORD_", ""));
+            if (newForm != null) {
+                applyTransformationRule(subject, newForm);
             }
         }
     }
@@ -158,32 +152,19 @@ public record LogicHandler(GamePanel gp) {
      * Finds the objects that have the name
      * And assigns the given property to that object
      * Called by checkRules()
-     * @param objectName The name of the object to pass the property to
+     * @param entityName The name of the entity to pass the property to
      * @param property The property the object will be receiving
      */
-    private void applyPropertyRule(String objectName, Entity.Property property) {
-        addProperty(gp.obj[gp.currentMap], objectName, property);
-        addProperty(gp.iTiles[gp.currentMap], objectName, property);
-        addProperty(gp.chr[gp.currentMap], objectName, property);
-    }
+    private void applyPropertyRule(String entityName, Entity.Property property) {
 
-    /**
-     * ADD PROPERTY
-     * Adds the property given to all entities found in the
-     *  list that matches the given name
-     * Called by applyPropertyRule()
-     * @param entityList List of entities in GamePanel
-     * @param entityName Name of entity to locate in the list
-     * @param property New property each entity will be given
-     */
-    private void addProperty(Entity[] entityList, String entityName, Entity.Property property) {
-        // For each entity in the list of entities
-        for (Entity e : entityList) {
-            if (e == null) continue;
+        for (Entity[] entities : gp.getAllRegularEntities()) {
+            for (Entity e : entities) {
+                if (e == null) continue;
 
-            // If entity's name (current or base form) matches passed name, provide property
-            if (e.name.equals(entityName)) {
-                e.properties.add(property);
+                // If entity's name (current or base form) matches passed name, provide property
+                if (e.name.equals(entityName)) {
+                    e.properties.add(property);
+                }
             }
         }
     }
@@ -193,29 +174,18 @@ public record LogicHandler(GamePanel gp) {
      * Runs transformation rules for all entities where applicable
      * Called by checkRules()
      * @param oldEntityName The name of the entity to be transformed
-     * @param newEntityName The name of the new entity that will be created
+     * @param newForm The new entity to form into
      */
-    private void applyTransformationRule(String oldEntityName, String newEntityName) {
-        transformEntity(gp.obj[gp.currentMap], oldEntityName, newEntityName);
-        transformEntity(gp.iTiles[gp.currentMap], oldEntityName, newEntityName);
-        transformEntity(gp.chr[gp.currentMap], oldEntityName, newEntityName);
-    }
+    private void applyTransformationRule(String oldEntityName, Entity newForm) {
 
-    /**
-     * TRANSFORM ENTITY
-     * Parses through the given list and applies form change if applicable
-     * Called by applyTransformationRule()
-     * @param entityList List of entities to be parsed over
-     * @param oldEntityName The name of the entity to be transformed
-     * @param newEntityName The name of the new entity that will be created
-     */
-    private void transformEntity(Entity[] entityList, String oldEntityName, String newEntityName) {
-        for (Entity entity : entityList) {
-            if (entity == null) continue;
+        for (Entity[] entities : gp.getAllRegularEntities()) {
+            for (Entity e : entities) {
+                if (e == null) continue;
 
-            // If entity's name (current form, not base) matches passed name, transform to new entity
-            if (entity.name.equals(oldEntityName)) {
-                entity.setForm(newEntityName);
+                // If entity's name matches passed name, transform to new entity
+                if (e.name.equals(oldEntityName)) {
+                    e.setForm(newForm);
+                }
             }
         }
     }

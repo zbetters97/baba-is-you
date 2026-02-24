@@ -130,8 +130,7 @@ public class SaveLoad {
                 if (revived) {
                     entities[i].worldX = saved[i].point.x;
                     entities[i].worldY = saved[i].point.y;
-                }
-                else if (entities[i].worldX != saved[i].point.x || entities[i].worldY != saved[i].point.y) {
+                } else if (entities[i].worldX != saved[i].point.x || entities[i].worldY != saved[i].point.y) {
                     entities[i].reversing = true;
                 }
             }

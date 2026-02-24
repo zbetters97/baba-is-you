@@ -63,8 +63,8 @@ public class UI {
         y += lineHeight;
         g2.drawString("WorldY: " + gp.chr[gp.currentMap][0].worldY, x, y);
         y += lineHeight;
-        g2.drawString("Column: " + (gp.chr[gp.currentMap][0].worldX + gp.chr[gp.currentMap][0].hitbox.x) / gp.tileSize, x, y);
+        g2.drawString("Column: " + gp.chr[gp.currentMap][0].worldX / gp.tileSize, x, y);
         y += lineHeight;
-        g2.drawString("Row: " + (gp.chr[gp.currentMap][0].worldY + gp.chr[gp.currentMap][0].hitbox.y) / gp.tileSize, x, y);
+        g2.drawString("Row: " + gp.chr[gp.currentMap][0].worldY / gp.tileSize, x, y);
     }
 }

@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 0;
+    public int currentMap = 2;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -187,7 +187,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        runUpdate();
+        updateEntities();
         handleMovementInput();
         checkRules();
         checkWin();
@@ -195,33 +195,22 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
-     * RUN UPDATE
-     * Updates each entity state
-     * Called by update()
-     */
-    private void runUpdate() {
-        updateEntities(words[currentMap]);
-        updateEntities(obj[currentMap]);
-        updateEntities(iTiles[currentMap]);
-        updateEntities(chr[currentMap]);
-    }
-
-    /**
      * UPDATE ENTITIES
-     * Iterates over each entity in the given list and
-     *  updates if alive, sets to null if not
+     * Iterates over each entity and updates if alive, sets to null if not
      * Called by runUpdate()
-     * @param entities List of entities to update
      */
-    private void updateEntities(Entity[] entities) {
-        for (int i = 0; i < entities.length; i++) {
-            if (entities[i] == null) continue;
+    private void updateEntities() {
 
-            if (entities[i].alive) {
-                entities[i].update();
-            }
-            else {
-                entities[i] = null;
+        for (Entity[] entities : getAllEntities()) {
+            for (int i = 0; i < entities.length; i++) {
+                if (entities[i] == null) continue;
+
+                if (entities[i].alive) {
+                    entities[i].update();
+                }
+                else {
+                    entities[i] = null;
+                }
             }
         }
     }
@@ -252,15 +241,14 @@ public class GamePanel extends JPanel implements Runnable {
             canLoad = false;
             cooldown = 0;
 
-            // WORDS will never be YOU, don't check for them
-            moveEntities(chr[currentMap], directionPressed);
-            moveEntities(obj[currentMap], directionPressed);
-            moveEntities(iTiles[currentMap], directionPressed);
+            for (Entity[] entities : getAllEntities()) {
+                moveEntities(entities, directionPressed);
+            }
         }
     }
     private boolean noEntitiesMoving() {
-        for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
-            for (Entity e : group) {
+        for (Entity[] entities : getAllEntities()) {
+            for (Entity e : entities) {
                 if (e == null) continue;
 
                 if (e.moving || e.reversing) {
@@ -283,8 +271,8 @@ public class GamePanel extends JPanel implements Runnable {
         return direction;
     }
     private boolean hasMoveableEntities(Direction direction) {
-        for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap] }) {
-            for (Entity e : group) {
+        for (Entity[] entities : getAllEntities()) {
+            for (Entity e : entities) {
                 if (e == null) continue;
 
                 if (e.properties.contains(Entity.Property.YOU) && e.canMove(e, direction, new LinkedHashSet<>())) {
@@ -369,12 +357,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawToTempScreen() {
         clearBackBuffer();
         tileM.draw(g2);
-
-        drawEntities(obj[currentMap]);
-        drawEntities(iTiles[currentMap]);
-        drawEntities(words[currentMap]);
-        drawEntities(chr[currentMap]);
-
+        drawEntities();
         ui.draw(g2);
     }
 
@@ -389,15 +372,16 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
-     * Iterates over each entity in the given list and
-     *  calls draw method
-     * @param entities List of entities to draw
+     * Iterates over each entity and calls draw method
+     * Called by drawToTempScreen()
      */
-    private void drawEntities(Entity[] entities) {
-        for (Entity e : entities) {
-            if (e == null) continue;
+    private void drawEntities() {
+        for (Entity[] entities : getAllEntities()) {
+            for (Entity e : entities) {
+                if (e == null) continue;
 
-            e.draw(g2);
+                e.draw(g2);
+            }
         }
     }
 
@@ -423,5 +407,13 @@ public class GamePanel extends JPanel implements Runnable {
         tileM.loadMap();
         aSetter.setup();
         lHandler.checkRules();
+    }
+
+    public Entity[][] getAllEntities() {
+        return new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap], words[currentMap] };
+    }
+
+    public Entity[][] getAllRegularEntities() {
+        return new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap] };
     }
 }

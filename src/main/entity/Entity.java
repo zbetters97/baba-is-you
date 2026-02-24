@@ -184,22 +184,22 @@ public class Entity {
 
         // Get all entities sitting on the next tile
         List<Entity> stack = gp.cChecker.getEntitiesAtNextTile(entity, dir);
-        for (Entity ent : stack) {
+        for (Entity e : stack) {
 
             // Can't move, entity has STOP
-            if (ent.properties.contains(Property.STOP)) {
+            if (e.properties.contains(Property.STOP)) {
                 return false;
             }
 
             // Entity has PUSH, attempt to move
-            if (ent.properties.contains(Property.PUSH)) {
+            if (e.properties.contains(Property.PUSH)) {
 
                 // Can't move
-                if (!canMove(ent, dir, moveSet)) {
+                if (!canMove(e, dir, moveSet)) {
                     return false;
                 }
 
-                moveSet.add(ent);
+                moveSet.add(e);
             }
         }
 
@@ -289,12 +289,8 @@ public class Entity {
     /**
      * SET FORM
      * Changes the entity's properties to match the new form
-     * @param newFormName The new form the entity will possess
      */
-    public void setForm(String newFormName) {
-        Entity newForm = gp.eGenerator.getEntity(newFormName);
-        if (newForm == null) return;
-
+    public void setForm(Entity newForm) {
         collisionOn = false;
 
         // Copy all attributes from new form
