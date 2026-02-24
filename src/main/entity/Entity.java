@@ -269,6 +269,7 @@ public class Entity {
     public void checkWin(Entity obj) {
         if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
             gp.win = true;
+            gp.gameState = gp.menuState;
         }
     }
 

@@ -59,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* GAME STATES */
     public int gameState;
     public final int playState = 1;
+    public final int menuState = 2;
 
     /* HANDLERS */
     public TileManager tileM = new TileManager(this);
@@ -187,11 +188,13 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by run()
      */
     private void update() {
-        updateEntities();
-        handleMovementInput();
-        checkLoad();
-        checkRules();
-        checkWin();
+        if (gameState == playState) {
+            updateEntities();
+            handleMovementInput();
+            checkLoad();
+            checkRules();
+            checkWin();
+        }
     }
 
     /**
@@ -329,7 +332,6 @@ public class GamePanel extends JPanel implements Runnable {
         // Checks rules once per update if turned on by an entity
         // Wait until entities stop moving
         if (rulesCheck && noEntitiesMoving()) {
-
             lHandler.scanForRules();
             rulesCheck = false;
         }
@@ -337,21 +339,21 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * CHECK WIN
-     * Checks if win is set to TRUE and
-     *  sets up the next level
+     * Checks if any entity has YOU and WIN,
+     *  sets up the next level if found
      * Called by update()
      */
     private void checkWin() {
-
-        // Check if any entity has YOU and WIN
         for (Entity[] entities : getAllRegularEntities()) {
             for (Entity e : entities) {
                 if (e == null) continue;
                 e.checkWin(e);
             }
         }
+    }
 
-        if (win && (currentLvl + 1 < maxLvls)) {
+    public void advanceLevel() {
+        if (currentLvl + 1 < maxLvls) {
             currentLvl++;
             setupLevel();
         }
@@ -411,6 +413,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void setupLevel() {
         win = false;
+        gameState = playState;
         dataHandler.clearData();
         tileM.loadLvl();
         aSetter.setup();
