@@ -37,6 +37,7 @@ public class SaveLoad {
 
         undoStack.push(new UndoFrame(wordStateStack, objStateStack, itStateStack, chrStateStack));
 
+        // Keep stack under max undo limit
         while (undoStack.size() > MAX_UNDO) {
             undoStack.removeLast();
         }
@@ -56,18 +57,15 @@ public class SaveLoad {
         State[] eStates = new State[entities.length];
 
         for (int i = 0; i < entities.length; i++) {
+            if (entities[i] == null) continue;
 
-            // Found entity
-            if (entities[i] != null) {
-
-                // For each entity, create a new state at same index to hold current state
-                eStates[i] = new State(
-                        entities[i].name,
-                        entities[i].worldX,
-                        entities[i].worldY,
-                        entities[i].direction
-                );
-            }
+            // For each entity, create a new state at same index to hold current state
+            eStates[i] = new State(
+                    entities[i].name,
+                    entities[i].worldX,
+                    entities[i].worldY,
+                    entities[i].direction
+            );
         }
 
         return eStates;

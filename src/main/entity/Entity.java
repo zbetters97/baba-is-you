@@ -100,7 +100,8 @@ public class Entity {
     public void update() {
         if (moving) {
             moveATile();
-        } else if (reversing) {
+        }
+        else if (reversing) {
             moveBackwards();
         }
     }
@@ -168,17 +169,17 @@ public class Entity {
     }
 
     /**
-     * CAN MOVE
+     * CANT MOVE
      * Checks if the entity is able to move a tile
      * Called by move()
      * @param entity Entity that wants to move
      * @param dir The direction the entity is moving
      * @return True if able to move, false if not
      */
-    public boolean cantMove(Entity entity, GamePanel.Direction dir, Set<Entity> moveSet) {
+    public boolean canMove(Entity entity, GamePanel.Direction dir, Set<Entity> moveSet) {
         // Tile with collision in the way
         if (gp.cChecker.tileBlocked(entity, dir)) {
-            return true;
+            return false;
         }
 
         // Get all entities sitting on the next tile
@@ -187,22 +188,22 @@ public class Entity {
 
             // Can't move, entity has STOP
             if (ent.properties.contains(Property.STOP)) {
-                return true;
+                return false;
             }
 
             // Entity has PUSH, attempt to move
             if (ent.properties.contains(Property.PUSH)) {
 
                 // Can't move
-                if (cantMove(ent, dir, moveSet)) {
-                    return true;
+                if (!canMove(ent, dir, moveSet)) {
+                    return false;
                 }
 
                 moveSet.add(ent);
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -215,6 +216,7 @@ public class Entity {
         checkEntities(gp.obj);
         checkEntities(gp.iTiles);
         checkEntities(gp.chr);
+        checkWin(this);
     }
 
     /**
@@ -263,9 +265,9 @@ public class Entity {
     /**
      * CHECK WIN
      * Checks if the entity can win the game/level
+     * Entity needs to be controlled by player to win
      */
     private void checkWin(Entity obj) {
-        // Entity needs to be controlled by player to win
         if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
             gp.win = true;
         }

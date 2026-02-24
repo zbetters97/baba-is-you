@@ -32,25 +32,23 @@ public record LogicHandler(GamePanel gp) {
     /**
      * CLEAR PROPERTIES
      * Resets all rules currently in place
+     * WORDS never have properties
      * Called by update();
      */
     private void clearProperties() {
-        for (Entity e : gp.obj[gp.currentMap]) {
-            if (e != null) {
-                e.properties.clear();
-            }
+        for (Entity obj : gp.obj[gp.currentMap]) {
+            if (obj == null) continue;
+            obj.properties.clear();
         }
 
-        for (Entity i : gp.iTiles[gp.currentMap]) {
-            if (i != null) {
-                i.properties.clear();
-            }
+        for (Entity it : gp.iTiles[gp.currentMap]) {
+            if (it == null) continue;
+            it.properties.clear();
         }
 
-        for (Entity c : gp.chr[gp.currentMap]) {
-            if (c != null) {
-                c.properties.clear();
-            }
+        for (Entity chr : gp.chr[gp.currentMap]) {
+            if (chr == null) continue;
+            chr.properties.clear();
         }
     }
 
@@ -181,9 +179,10 @@ public record LogicHandler(GamePanel gp) {
     private void addProperty(Entity[] entityList, String entityName, Entity.Property property) {
         // For each entity in the list of entities
         for (Entity e : entityList) {
+            if (e == null) continue;
 
             // If entity's name (current or base form) matches passed name, provide property
-            if (e != null && (e.name.equals(entityName))) {
+            if (e.name.equals(entityName)) {
                 e.properties.add(property);
             }
         }
@@ -212,9 +211,10 @@ public record LogicHandler(GamePanel gp) {
      */
     private void transformEntity(Entity[] entityList, String oldEntityName, String newEntityName) {
         for (Entity entity : entityList) {
+            if (entity == null) continue;
 
             // If entity's name (current form, not base) matches passed name, transform to new entity
-            if (entity != null && entity.name.equals(oldEntityName)) {
+            if (entity.name.equals(oldEntityName)) {
                 entity.setForm(newEntityName);
             }
         }

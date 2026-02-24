@@ -215,13 +215,13 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void updateEntities(Entity[] entities) {
         for (int i = 0; i < entities.length; i++) {
-            if (entities[i] != null) {
-                if (entities[i].alive) {
-                    entities[i].update();
-                }
-                else {
-                    entities[i] = null;
-                }
+            if (entities[i] == null) continue;
+
+            if (entities[i].alive) {
+                entities[i].update();
+            }
+            else {
+                entities[i] = null;
             }
         }
     }
@@ -246,22 +246,24 @@ public class GamePanel extends JPanel implements Runnable {
         Direction directionPressed = getPressedDirection();
 
         // Arrow pressed while no entity movement
-        if (directionPressed != null && cooldown > 2) {
+        if (directionPressed != null && cooldown > 2 && hasMoveableEntities(directionPressed)) {
 
             dataHandler.saveState();
             canLoad = false;
             cooldown = 0;
 
+            // WORDS will never be YOU, don't check for them
             moveEntities(chr[currentMap], directionPressed);
             moveEntities(obj[currentMap], directionPressed);
-            moveEntities(words[currentMap], directionPressed);
             moveEntities(iTiles[currentMap], directionPressed);
         }
     }
     private boolean noEntitiesMoving() {
         for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], words[currentMap], iTiles[currentMap] }) {
             for (Entity e : group) {
-                if (e != null && (e.moving || e.reversing)) {
+                if (e == null) continue;
+
+                if (e.moving || e.reversing) {
                     return false;
                 }
             }
@@ -280,6 +282,19 @@ public class GamePanel extends JPanel implements Runnable {
 
         return direction;
     }
+    private boolean hasMoveableEntities(Direction direction) {
+        for (Entity[] group : new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap] }) {
+            for (Entity e : group) {
+                if (e == null) continue;
+
+                if (e.properties.contains(Entity.Property.YOU) && e.canMove(e, direction, new LinkedHashSet<>())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     private void moveEntities(Entity[] entities, Direction direction) {
 
         // Set of entities to move
@@ -287,14 +302,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Loop through each entity
         for (Entity e : entities) {
+            if (e == null) continue;
 
-            // Not found or doesn't contain YOU property
-            if (e == null || !e.properties.contains(Entity.Property.YOU)) {
-                continue;
-            }
-
-            // Entity unable to move
-            if (e.cantMove(e, direction, moveSet)) {
+            // Entity not YOU or unable to move
+            if (!e.properties.contains(Entity.Property.YOU) || !e.canMove(e, direction, moveSet)) {
                 continue;
             }
 
@@ -384,9 +395,9 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void drawEntities(Entity[] entities) {
         for (Entity e : entities) {
-            if (e != null) {
-                e.draw(g2);
-            }
+            if (e == null) continue;
+
+            e.draw(g2);
         }
     }
 

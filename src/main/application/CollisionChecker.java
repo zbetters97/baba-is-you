@@ -19,10 +19,12 @@ public record CollisionChecker(GamePanel gp) {
 
         // Get all entities at the next tile
         List<Entity> result = new ArrayList<>();
-        for (Entity[] group : new Entity[][] { gp.words[gp.currentMap], gp.obj[gp.currentMap], gp.iTiles[gp.currentMap], gp.chr[gp.currentMap]}) {
-            for (Entity ent : group) {
-                if (ent != null && ent.worldX == next.x && ent.worldY == next.y) {
-                    result.add(ent);
+        for (Entity[] entities : new Entity[][] { gp.words[gp.currentMap], gp.obj[gp.currentMap], gp.iTiles[gp.currentMap], gp.chr[gp.currentMap]}) {
+            for (Entity e : entities) {
+                if (e == null) continue;
+
+                if (e.worldX == next.x && e.worldY == next.y) {
+                    result.add(e);
                 }
             }
         }
@@ -87,47 +89,35 @@ public record CollisionChecker(GamePanel gp) {
 
         int index = -1;
         for (int i = 0; i < targets[1].length; i++) {
+            if (targets[gp.currentMap][i] == null) continue;
 
-            if (targets[gp.currentMap][i] != null) {
+            entity.hitbox.x = entity.worldX;
+            entity.hitbox.y = entity.worldY;
 
-                entity.hitbox.x = entity.worldX;
-                entity.hitbox.y = entity.worldY;
+            targets[gp.currentMap][i].hitbox.x = targets[gp.currentMap][i].worldX;
+            targets[gp.currentMap][i].hitbox.y = targets[gp.currentMap][i].worldY;
 
-                targets[gp.currentMap][i].hitbox.x = targets[gp.currentMap][i].worldX;
-                targets[gp.currentMap][i].hitbox.y = targets[gp.currentMap][i].worldY;
+            // Entity and target collides
+            if (entity.hitbox.intersects(targets[gp.currentMap][i].hitbox)) {
+                if (targets[gp.currentMap][i] == entity) continue;
 
-                // Shift hitbox to find next tile based on direction
-                /*
-                switch (entity.direction) {
-                    case UP -> entity.hitbox.y -= gp.tileSize;
-                    case DOWN -> entity.hitbox.y += gp.tileSize;
-                    case LEFT -> entity.hitbox.x -= gp.tileSize;
-                    case RIGHT -> entity.hitbox.x += gp.tileSize;
-                }
-                */
-
-                // Entity and target collides
-                if (entity.hitbox.intersects(targets[gp.currentMap][i].hitbox)) {
-                    if (targets[gp.currentMap][i] != entity) {
-                        index = i;
-                        if (targets[gp.currentMap][i].properties.contains(Entity.Property.STOP) || targets[gp.currentMap][i].collisionOn) {
-                            entity.collisionOn = true;
-                        }
-                    }
-                }
-
-                if (isOutOfBounds(entity.hitbox.x, entity.hitbox.y)) {
+                index = i;
+                if (targets[gp.currentMap][i].properties.contains(Entity.Property.STOP) || targets[gp.currentMap][i].collisionOn) {
                     entity.collisionOn = true;
                 }
-
-                // Reset entity solid area
-                entity.hitbox.x = 0;
-                entity.hitbox.y = 0;
-
-                // Reset target solid area
-                targets[gp.currentMap][i].hitbox.x = 0;
-                targets[gp.currentMap][i].hitbox.y = 0;
             }
+
+            if (isOutOfBounds(entity.hitbox.x, entity.hitbox.y)) {
+                entity.collisionOn = true;
+            }
+
+            // Reset entity solid area
+            entity.hitbox.x = 0;
+            entity.hitbox.y = 0;
+
+            // Reset target solid area
+            targets[gp.currentMap][i].hitbox.x = 0;
+            targets[gp.currentMap][i].hitbox.y = 0;
         }
 
         return index;
