@@ -163,6 +163,18 @@ public class Entity {
         gp.rulesCheck = true;
     }
 
+    /**
+     * CHECK RULES
+     * Checks various rules in play on each entity list
+     * Called by pushEntities()
+     */
+    private void checkRules() {
+        checkEntities(gp.words);
+        checkEntities(gp.obj);
+        checkEntities(gp.iTiles);
+        checkEntities(gp.chr);
+    }
+
     public void startMove(GamePanel.Direction dir) {
         this.direction = dir;
         this.moving = true;
@@ -207,19 +219,6 @@ public class Entity {
     }
 
     /**
-     * CHECK RULES
-     * Checks various rules in play on each entity list
-     * Called by pushEntities()
-     */
-    private void checkRules() {
-        checkEntities(gp.words);
-        checkEntities(gp.obj);
-        checkEntities(gp.iTiles);
-        checkEntities(gp.chr);
-        checkWin(this);
-    }
-
-    /**
      * CHECK ENTITIES
      * Checks each type of collision for given entity list
      * @param entities List of entities to check collision against
@@ -228,10 +227,10 @@ public class Entity {
         int ent = gp.cChecker.checkEntity(this, entities);
 
         if (ent != -1) {
-            checkSink(entities[gp.currentMap][ent]);
-            checkWin(entities[gp.currentMap][ent]);
-            checkDefeat(entities[gp.currentMap][ent]);
-            checkWin(entities[gp.currentMap][ent]);
+            checkSink(entities[gp.currentLvl][ent]);
+            checkWin(entities[gp.currentLvl][ent]);
+            checkDefeat(entities[gp.currentLvl][ent]);
+            checkWin(entities[gp.currentLvl][ent]);
         }
     }
 
@@ -267,7 +266,7 @@ public class Entity {
      * Checks if the entity can win the game/level
      * Entity needs to be controlled by player to win
      */
-    private void checkWin(Entity obj) {
+    public void checkWin(Entity obj) {
         if (properties.contains(Property.YOU) && obj.properties.contains(Property.WIN)) {
             gp.win = true;
         }

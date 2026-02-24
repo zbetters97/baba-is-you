@@ -17,8 +17,8 @@ public class TileManager {
     private final GamePanel gp;
     public Tile[] tiles;
 
-    /* [MAP NUMBER][ROW][COL] */
-    public final int[][][] mapTileNum;
+    /* [LEVEL NUMBER][ROW][COL] */
+    public final int[][][] lvlTileNum;
 
     /**
      * CONSTRUCTOR
@@ -26,18 +26,18 @@ public class TileManager {
      */
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        mapTileNum = new int[gp.maxMap][33][18];
+        lvlTileNum = new int[gp.maxLvls][33][18];
         loadTileData();
     }
 
     /**
-     * LOAD MAP
-     * Loads current map data
+     * LOAD LEVEL
+     * Loads current level data
      */
-    public void loadMap() {
+    public void loadLvl() {
 
-        // Import current map
-        InputStream inputStream = getClass().getResourceAsStream("/maps/" + gp.mapFiles[gp.currentMap]);
+        // Import current level
+        InputStream inputStream = getClass().getResourceAsStream("/levels/" + gp.lvlFiles[gp.currentLvl]);
 
         try {
             Scanner sc = new Scanner(Objects.requireNonNull(inputStream));
@@ -48,7 +48,7 @@ public class TileManager {
 
                 for (int col = 0; col < numbers.length; col++) {
                     int tileNum = Integer.parseInt(numbers[col]);
-                    mapTileNum[gp.currentMap][col][row] = tileNum;
+                    lvlTileNum[gp.currentLvl][col][row] = tileNum;
                 }
             }
 
@@ -68,7 +68,7 @@ public class TileManager {
         ArrayList<String> collisionStatus = new ArrayList<>();
 
         // Import tile data
-        InputStream is = getClass().getResourceAsStream("/maps/map_tile_data.txt");
+        InputStream is = getClass().getResourceAsStream("/levels/lvl_tile_data.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
 
         // Add tile data to arrays
@@ -140,7 +140,7 @@ public class TileManager {
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
             // Grab tile
-            int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
+            int tileNum = lvlTileNum[gp.currentLvl][worldCol][worldRow];
 
             // Draw to x/y
             g2.drawImage(tiles[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);

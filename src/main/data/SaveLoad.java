@@ -30,10 +30,10 @@ public class SaveLoad {
      * Called by GamePanel when canSave is TRUE
      */
     public void saveState() {
-        State[] wordStateStack = saveEntityStates(gp.words[gp.currentMap]);
-        State[] objStateStack = saveEntityStates(gp.obj[gp.currentMap]);
-        State[] itStateStack = saveEntityStates(gp.iTiles[gp.currentMap]);
-        State[] chrStateStack = saveEntityStates(gp.chr[gp.currentMap]);
+        State[] wordStateStack = saveEntityStates(gp.words[gp.currentLvl]);
+        State[] objStateStack = saveEntityStates(gp.obj[gp.currentLvl]);
+        State[] itStateStack = saveEntityStates(gp.iTiles[gp.currentLvl]);
+        State[] chrStateStack = saveEntityStates(gp.chr[gp.currentLvl]);
 
         undoStack.push(new UndoFrame(wordStateStack, objStateStack, itStateStack, chrStateStack));
 
@@ -83,10 +83,10 @@ public class SaveLoad {
 
         UndoFrame frame = undoStack.pop();
 
-        loadEntityStates(frame.words(), gp.words[gp.currentMap]);
-        loadEntityStates(frame.obj(), gp.obj[gp.currentMap]);
-        loadEntityStates(frame.iTiles(), gp.iTiles[gp.currentMap]);
-        loadEntityStates(frame.chr(), gp.chr[gp.currentMap]);
+        loadEntityStates(frame.words(), gp.words[gp.currentLvl]);
+        loadEntityStates(frame.obj(), gp.obj[gp.currentLvl]);
+        loadEntityStates(frame.iTiles(), gp.iTiles[gp.currentLvl]);
+        loadEntityStates(frame.chr(), gp.chr[gp.currentLvl]);
     }
 
     /**
@@ -110,29 +110,33 @@ public class SaveLoad {
 
             boolean revived = false;
 
-            // Has data but entity is already null, or entity changed since redo
-            if (entities[i] == null || !entities[i].name.equals(saved[i].name)) {
+            // Has data but entity is now null
+            if (entities[i] == null) {
 
                 // Resurrect entity using saved state
                 entities[i] = gp.eGenerator.getEntity(saved[i].name);
                 entities[i].alive = true;
                 revived = true;
             }
+            // Entity changed since redo
+            else if (!entities[i].name.equals(saved[i].name)) {
+                entities[i].setForm(gp.eGenerator.getEntity(saved[i].name));
+            }
 
-            // Entity data found or successful resurrection
-            if (entities[i] != null) {
+            if (entities[i] == null) continue;
 
-                // Assign values to entity
-                entities[i].previousWorldX = saved[i].point.x;
-                entities[i].previousWorldY = saved[i].point.y;
-                entities[i].direction = saved[i].direction;
+            // Assign values to entity
+            entities[i].previousWorldX = saved[i].point.x;
+            entities[i].previousWorldY = saved[i].point.y;
+            entities[i].direction = saved[i].direction;
 
-                if (revived) {
-                    entities[i].worldX = saved[i].point.x;
-                    entities[i].worldY = saved[i].point.y;
-                } else if (entities[i].worldX != saved[i].point.x || entities[i].worldY != saved[i].point.y) {
-                    entities[i].reversing = true;
-                }
+            // Entity resurrected, place back at saved X/Y
+            if (revived) {
+                entities[i].worldX = saved[i].point.x;
+                entities[i].worldY = saved[i].point.y;
+            }
+            else if (entities[i].worldX != saved[i].point.x || entities[i].worldY != saved[i].point.y) {
+                entities[i].reversing = true;
             }
         }
     }

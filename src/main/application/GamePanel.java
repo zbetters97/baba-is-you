@@ -46,9 +46,9 @@ public class GamePanel extends JPanel implements Runnable {
     public int maxWorldRow = 18;
 
     /* MAPS */
-    public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
-    public final int maxMap = mapFiles.length;
-    public int currentMap = 2;
+    public final String[] lvlFiles = {"lvl_1_1.txt", "lvl_1_2.txt", "lvl_1_3.txt", "lvl_1_4.txt"};
+    public final int maxLvls = lvlFiles.length;
+    public int currentLvl = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -69,10 +69,10 @@ public class GamePanel extends JPanel implements Runnable {
     public final SaveLoad dataHandler = new SaveLoad(this);
 
     /* ENTITIES */
-    public Entity[][] chr = new Entity[maxMap][50];
-    public Entity[][] obj = new Entity[maxMap][50];
-    public Entity[][] words = new Entity[maxMap][50];
-    public Entity[][] iTiles = new Entity[maxMap][100];
+    public Entity[][] chr = new Entity[maxLvls][50];
+    public Entity[][] obj = new Entity[maxLvls][50];
+    public Entity[][] words = new Entity[maxLvls][50];
+    public Entity[][] iTiles = new Entity[maxLvls][100];
 
     /* GENERAL VALUES */
     public boolean showGrid = true;
@@ -189,9 +189,9 @@ public class GamePanel extends JPanel implements Runnable {
     private void update() {
         updateEntities();
         handleMovementInput();
+        checkLoad();
         checkRules();
         checkWin();
-        checkLoad();
     }
 
     /**
@@ -200,7 +200,6 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by runUpdate()
      */
     private void updateEntities() {
-
         for (Entity[] entities : getAllEntities()) {
             for (int i = 0; i < entities.length; i++) {
                 if (entities[i] == null) continue;
@@ -307,6 +306,20 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
+     * CHECK LOAD
+     * Calls dataHandler to load entity states if B pressed
+     * Can only call redo when canLoad is TRUE and no one moving
+     * Called by update()
+     */
+    private void checkLoad() {
+        if (keyH.bPressed && canLoad && noEntitiesMoving()) {
+            keyH.bPressed = false;
+            dataHandler.loadState();
+            rulesCheck = true;
+        }
+    }
+
+    /**
      * CHECK RULES
      * Calls lHandler to check rules if rulesCheck is TRUE
      * Called by update()
@@ -314,8 +327,10 @@ public class GamePanel extends JPanel implements Runnable {
     private void checkRules() {
 
         // Checks rules once per update if turned on by an entity
-        if (rulesCheck) {
-            lHandler.checkRules();
+        // Wait until entities stop moving
+        if (rulesCheck && noEntitiesMoving()) {
+
+            lHandler.scanForRules();
             rulesCheck = false;
         }
     }
@@ -327,25 +342,18 @@ public class GamePanel extends JPanel implements Runnable {
      * Called by update()
      */
     private void checkWin() {
-        if (win && (currentMap + 1 < maxMap)) {
-            currentMap++;
-            setupLevel();
+
+        // Check if any entity has YOU and WIN
+        for (Entity[] entities : getAllRegularEntities()) {
+            for (Entity e : entities) {
+                if (e == null) continue;
+                e.checkWin(e);
+            }
         }
-    }
 
-    /**
-     * CHECK LOAD
-     * Calls dataHandler to load entity states if
-     *  B pressed
-     * Called by update()
-     */
-    private void checkLoad() {
-
-        // Can only call redo when canLoad is TRUE and no one moving
-        if (keyH.bPressed && canLoad && noEntitiesMoving()) {
-            keyH.bPressed = false;
-            dataHandler.loadState();
-            lHandler.checkRules();
+        if (win && (currentLvl + 1 < maxLvls)) {
+            currentLvl++;
+            setupLevel();
         }
     }
 
@@ -404,16 +412,15 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupLevel() {
         win = false;
         dataHandler.clearData();
-        tileM.loadMap();
+        tileM.loadLvl();
         aSetter.setup();
-        lHandler.checkRules();
+        lHandler.scanForRules();
     }
 
     public Entity[][] getAllEntities() {
-        return new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap], words[currentMap] };
+        return new Entity[][]{iTiles[currentLvl], obj[currentLvl], chr[currentLvl], words[currentLvl]};
     }
-
     public Entity[][] getAllRegularEntities() {
-        return new Entity[][] { chr[currentMap], obj[currentMap], iTiles[currentMap] };
+        return new Entity[][] { iTiles[currentLvl], obj[currentLvl], chr[currentLvl] };
     }
 }

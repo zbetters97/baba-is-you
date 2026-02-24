@@ -51,7 +51,7 @@ public record CollisionChecker(GamePanel gp) {
         int row = next.y / gp.tileSize;
 
         // Retrieve tile object at index
-        int tile = gp.tileM.mapTileNum[gp.currentMap][col][row];
+        int tile = gp.tileM.lvlTileNum[gp.currentLvl][col][row];
 
         // True if tile has collision
         return gp.tileM.tiles[tile].hasCollision;
@@ -89,20 +89,20 @@ public record CollisionChecker(GamePanel gp) {
 
         int index = -1;
         for (int i = 0; i < targets[1].length; i++) {
-            if (targets[gp.currentMap][i] == null) continue;
+            if (targets[gp.currentLvl][i] == null) continue;
 
             entity.hitbox.x = entity.worldX;
             entity.hitbox.y = entity.worldY;
 
-            targets[gp.currentMap][i].hitbox.x = targets[gp.currentMap][i].worldX;
-            targets[gp.currentMap][i].hitbox.y = targets[gp.currentMap][i].worldY;
+            targets[gp.currentLvl][i].hitbox.x = targets[gp.currentLvl][i].worldX;
+            targets[gp.currentLvl][i].hitbox.y = targets[gp.currentLvl][i].worldY;
 
             // Entity and target collides
-            if (entity.hitbox.intersects(targets[gp.currentMap][i].hitbox)) {
-                if (targets[gp.currentMap][i] == entity) continue;
+            if (entity.hitbox.intersects(targets[gp.currentLvl][i].hitbox)) {
+                if (targets[gp.currentLvl][i] == entity) continue;
 
                 index = i;
-                if (targets[gp.currentMap][i].properties.contains(Entity.Property.STOP) || targets[gp.currentMap][i].collisionOn) {
+                if (targets[gp.currentLvl][i].properties.contains(Entity.Property.STOP) || targets[gp.currentLvl][i].collisionOn) {
                     entity.collisionOn = true;
                 }
             }
@@ -116,8 +116,8 @@ public record CollisionChecker(GamePanel gp) {
             entity.hitbox.y = 0;
 
             // Reset target solid area
-            targets[gp.currentMap][i].hitbox.x = 0;
-            targets[gp.currentMap][i].hitbox.y = 0;
+            targets[gp.currentLvl][i].hitbox.x = 0;
+            targets[gp.currentLvl][i].hitbox.y = 0;
         }
 
         return index;

@@ -9,9 +9,9 @@ public record AssetSetter(GamePanel gp) {
 
     public void setup() {
 
-        if (gp.currentMap == 0) setupLevelOne();
-        else if (gp.currentMap == 1) setupLevelTwo();
-        else if (gp.currentMap == 2) setupLevelThree();
+        if (gp.currentLvl == 0) setupLevelOne();
+        else if (gp.currentLvl == 1) setupLevelTwo();
+        else if (gp.currentLvl == 2) setupLevelThree();
         else setupLevelFour();
     }
 

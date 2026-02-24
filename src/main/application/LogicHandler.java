@@ -23,7 +23,7 @@ public record LogicHandler(GamePanel gp) {
      * Runs the methods in LogicHandler
      * Called by GamePanel
      */
-    public void checkRules() {
+    public void scanForRules() {
         clearProperties();
         scanColumnRules();
         scanRowRules();
@@ -60,7 +60,7 @@ public record LogicHandler(GamePanel gp) {
             Arrays.fill(colWords, "");
 
             // Loop over all pre-existing words
-            for (Entity word : gp.words[gp.currentMap]) {
+            for (Entity word : gp.words[gp.currentLvl]) {
                 if (word != null) {
                     int x = word.worldX / gp.tileSize;
                     int y = word.worldY / gp.tileSize;
@@ -92,7 +92,7 @@ public record LogicHandler(GamePanel gp) {
             Arrays.fill(rowWords, "");
 
             // Loop over all pre-existing words
-            for (Entity word : gp.words[gp.currentMap]) {
+            for (Entity word : gp.words[gp.currentLvl]) {
                 if (word != null) {
                     int x = word.worldX / gp.tileSize;
                     int y = word.worldY / gp.tileSize;
@@ -177,7 +177,6 @@ public record LogicHandler(GamePanel gp) {
      * @param newForm The new entity to form into
      */
     private void applyTransformationRule(String oldEntityName, Entity newForm) {
-
         for (Entity[] entities : gp.getAllRegularEntities()) {
             for (Entity e : entities) {
                 if (e == null) continue;
