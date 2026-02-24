@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     /* MAPS */
     public final String[] mapFiles = {"map_lvl_1.txt", "map_lvl_2.txt", "map_lvl_3.txt", "map_lvl_4.txt"};
     public final int maxMap = mapFiles.length;
-    public int currentMap = 3;
+    public int currentMap = 0;
 
     /* FULL SCREEN SETTINGS */
     public boolean fullScreenOn = false;
@@ -247,6 +247,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Arrow pressed while no entity movement
         if (directionPressed != null && cooldown > 2) {
+
             dataHandler.saveState();
             canLoad = false;
             cooldown = 0;
@@ -345,6 +346,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (keyH.bPressed && canLoad && noEntitiesMoving()) {
             keyH.bPressed = false;
             dataHandler.loadState();
+            lHandler.checkRules();
         }
     }
 
